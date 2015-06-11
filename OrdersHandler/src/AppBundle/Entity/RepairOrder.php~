@@ -1,0 +1,177 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * RepairOrder
+ */
+class RepairOrder
+{
+    const STATUS_OPEN = 'Open';
+    const STATUS_ASSIGNED = 'Assigned';
+    const STATUS_IN_PROCESS = 'In process';
+    const STATUS_RESOLVED = 'Resolved';
+    const STATUS_CLOSED = 'Closed';
+    const STATUS_REOPENED = 'Reopened';
+
+    /**
+     * @var integer
+     */
+    private $id;
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+    /**
+     * @var string
+     */
+    private $description;
+
+    /**
+     * @var string
+     */
+    private $address;
+
+    /**
+     * @var string
+     */
+    private $status;
+
+    /**
+     * @var \AppBundle\Entity\User
+     */
+    private $user;
+
+    /**
+     * @var \AppBundle\Entity\Company
+     */
+    private $company;
+
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return RepairOrder
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set address
+     *
+     * @param string $address
+     * @return RepairOrder
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return string 
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     * @return RepairOrder
+     */
+    public function setStatus($status)
+    {
+        if (!in_array($status, array(self::STATUS_OPEN, self::STATUS_ASSIGNED, self::STATUS_IN_PROCESS, self::STATUS_RESOLVED, self::STATUS_CLOSED, self::STATUS_REOPENED))) {
+            throw new \InvalidArgumentException("Invalid status");
+        }
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string 
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     * @return RepairOrder
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \AppBundle\Entity\Company $company
+     * @return RepairOrder
+     */
+    public function setCompany(\AppBundle\Entity\Company $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \AppBundle\Entity\Company 
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+}
