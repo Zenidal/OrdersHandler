@@ -4,9 +4,22 @@ security:
             memory: ~
 
     firewalls:
+        login_firewall:
+            pattern:   ^/login$
+            anonymous: ~
+        secured_area:
+            pattern:    ^/
+            form_login: ~
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
             security: false
 
         default:
             anonymous: ~
+            http_basic: ~
+            form_login:
+                login_path: /login
+                check_path: /login_check
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_ADMIN }
