@@ -1,0 +1,6 @@
+AppBundle\Entity\RepairOrder:
+    properties:
+        description:
+            - NotBlank:
+                message: 'Description should not be blank'
+                groups: [repairOrder]

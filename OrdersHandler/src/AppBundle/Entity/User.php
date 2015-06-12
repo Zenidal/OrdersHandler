@@ -188,7 +188,7 @@ class User
      * @param \AppBundle\Entity\RepairOrder $repairOrders
      * @return User
      */
-    public function addRepairOrder(\AppBundle\Entity\RepairOrder $repairOrders)
+    public function addRepairOrder(RepairOrder $repairOrders)
     {
         $this->repair_orders[] = $repairOrders;
 
@@ -200,7 +200,7 @@ class User
      *
      * @param \AppBundle\Entity\RepairOrder $repairOrders
      */
-    public function removeRepairOrder(\AppBundle\Entity\RepairOrder $repairOrders)
+    public function removeRepairOrder(RepairOrder $repairOrders)
     {
         $this->repair_orders->removeElement($repairOrders);
     }
@@ -221,7 +221,7 @@ class User
      * @param \AppBundle\Entity\Role $role
      * @return User
      */
-    public function setRole(\AppBundle\Entity\Role $role = null)
+    public function setRole(Role $role = null)
     {
         $this->role = $role;
 

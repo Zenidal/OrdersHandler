@@ -60,10 +60,10 @@ class Place
     /**
      * Set place
      *
-     * @param \AppBundle\Entity\Company $place
+     * @param Company $place
      * @return Place
      */
-    public function setPlace(\AppBundle\Entity\Company $place = null)
+    public function setPlace(Company $place = null)
     {
         $this->place = $place;
 
@@ -73,14 +73,14 @@ class Place
     /**
      * Get place
      *
-     * @return \AppBundle\Entity\Company 
+     * @return Company
      */
     public function getPlace()
     {
         return $this->place;
     }
     /**
-     * @var \AppBundle\Entity\Company
+     * @var Company
      */
     private $company;
 
@@ -88,10 +88,10 @@ class Place
     /**
      * Set company
      *
-     * @param \AppBundle\Entity\Company $company
+     * @param Company $company
      * @return Place
      */
-    public function setCompany(\AppBundle\Entity\Company $company = null)
+    public function setCompany(Company $company = null)
     {
         $this->company = $company;
 
@@ -101,7 +101,7 @@ class Place
     /**
      * Get company
      *
-     * @return \AppBundle\Entity\Company 
+     * @return Company
      */
     public function getCompany()
     {

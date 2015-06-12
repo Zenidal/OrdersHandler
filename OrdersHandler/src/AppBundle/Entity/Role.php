@@ -78,7 +78,7 @@ class Role
      * @param \AppBundle\Entity\User $users
      * @return Role
      */
-    public function addUser(\AppBundle\Entity\User $users)
+    public function addUser(User $users)
     {
         $this->users[] = $users;
 
@@ -90,7 +90,7 @@ class Role
      *
      * @param \AppBundle\Entity\User $users
      */
-    public function removeUser(\AppBundle\Entity\User $users)
+    public function removeUser(User $users)
     {
         $this->users->removeElement($users);
     }
