@@ -13,3 +13,9 @@ account_register:
 account_create:
     path:     /register/create
     defaults: { _controller: AppBundle:Account:create }
+
+login:
+    pattern:   /login
+    defaults:  { _controller: AppBundle:Security:login }
+login_check:
+    pattern:   /login_check

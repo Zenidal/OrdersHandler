@@ -4,3 +4,11 @@ AppBundle\Entity\RepairOrder:
             - NotBlank:
                 message: 'Description should not be blank'
                 groups: [repairOrder]
+
+AppBundle\Entity\User:
+    properties:
+        name:
+            - NotBlank:
+                message: 'Name should not be blank'
+                groups: [user]
+

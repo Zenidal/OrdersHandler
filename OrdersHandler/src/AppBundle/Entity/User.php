@@ -13,17 +13,20 @@ class User implements UserInterface, \Serializable
 {
     /**
      * @var string
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
-     * @Assert\Length()
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 50,
+     *      minMessage = "Trrrrrrrrr"
+     * )
      */
     private $username;
 
     /**
      * @var string
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
-     * @Assert\Length()
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 50
+     * )
      */
     private $password;
 
@@ -34,33 +37,37 @@ class User implements UserInterface, \Serializable
 
     /**
      * @var string
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
-     * @Assert\Length()
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 50
+     * )
      */
     private $name;
 
     /**
      * @var string
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
-     * @Assert\Length()
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 50
+     * )
      */
     private $surname;
 
     /**
      * @var string
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
-     * @Assert\Length()
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 50
+     * )
      */
     private $email;
 
     /**
      * @var integer
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
-     * @Assert\Length()
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 50
+     * )
      */
     private $id;
 

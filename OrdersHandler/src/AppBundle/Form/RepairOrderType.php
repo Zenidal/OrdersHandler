@@ -51,7 +51,7 @@ class RepairOrderType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'RestBundle\Entity\RepairOrder',
+            'data_class' => 'AppBundle\Entity\RepairOrder',
             'csrf_protection' => false,
             'cascade_validation' => true,
             'validation_groups' => ['repairOrder'],
