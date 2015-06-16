@@ -37,7 +37,7 @@ class AccountController extends Controller
             $em->persist($registration->getUser());
             $em->flush();
 
-            return $this->redirectToRoute('login_route');
+            return $this->redirectToRoute('login');
         }
 
         return $this->render(

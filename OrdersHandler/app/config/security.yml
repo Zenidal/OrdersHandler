@@ -11,7 +11,7 @@ security:
 
     firewalls:
         index_firewall:
-            pattern: ^/$
+            pattern: ^/home$
             anonymous: ~
         register_firewall:
             pattern: ^/register$
@@ -21,6 +21,9 @@ security:
             anonymous: ~
         login_firewall:
             pattern:   ^/login$
+            anonymous: ~
+        repair_orders_firewall:
+            pattern: ^/repair_orders$
             anonymous: ~
         secured_area:
             pattern:    ^/
@@ -41,4 +44,5 @@ security:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register/create, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/repair_orders, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
