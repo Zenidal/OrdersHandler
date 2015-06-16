@@ -1,9 +1,24 @@
 security:
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
     providers:
-        in_memory:
-            memory: ~
+        our_db_provider:
+            entity:
+                class: AppBundle:User
+                property: username
 
     firewalls:
+        index_firewall:
+            pattern: ^/$
+            anonymous: ~
+        register_firewall:
+            pattern: ^/register$
+            anonymous: ~
+        register_create_firewall:
+            pattern: ^/register/create$
+            anonymous: ~
         login_firewall:
             pattern:   ^/login$
             anonymous: ~
@@ -15,11 +30,15 @@ security:
             security: false
 
         default:
+            pattern:    ^/
             anonymous: ~
             http_basic: ~
+            provider: our_db_provider
             form_login:
                 login_path: /login
                 check_path: /login_check
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_ADMIN }
+        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register/create, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

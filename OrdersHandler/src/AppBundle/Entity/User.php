@@ -3,39 +3,64 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * User
  */
-class User
+class User implements UserInterface, \Serializable
 {
     /**
      * @var string
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length()
      */
     private $username;
 
     /**
      * @var string
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length()
      */
-    private $password_hash;
+    private $password;
 
     /**
      * @var string
+     */
+    private $salt;
+
+    /**
+     * @var string
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length()
      */
     private $name;
 
     /**
      * @var string
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length()
      */
     private $surname;
 
     /**
      * @var string
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length()
      */
     private $email;
 
     /**
      * @var integer
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length()
      */
     private $id;
 
@@ -43,11 +68,15 @@ class User
      * @var \Doctrine\Common\Collections\Collection
      */
     private $repair_orders;
-
+    
     /**
      * @var \AppBundle\Entity\Role
      */
     private $role;
+    /**
+     * @var boolean
+     */
+    private $isActive = true;
 
     /**
      * Constructor
@@ -81,26 +110,72 @@ class User
     }
 
     /**
-     * Set password_hash
+     * Set password
      *
-     * @param string $passwordHash
+     * @param string $password
      * @return User
      */
-    public function setPasswordHash($passwordHash)
+    public function setPassword($password)
     {
-        $this->password_hash = $passwordHash;
+        $this->password = $password;
 
         return $this;
     }
 
     /**
-     * Get password_hash
+     * Get password
      *
      * @return string 
      */
-    public function getPasswordHash()
+    public function getPassword()
     {
-        return $this->password_hash;
+        return $this->password;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean 
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return User
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    /**
+     * Get salt
+     *
+     * @return string 
+     */
+    public function getSalt()
+    {
+        return $this->salt;
     }
 
     /**
@@ -185,7 +260,7 @@ class User
     /**
      * Add repair_orders
      *
-     * @param \AppBundle\Entity\RepairOrder $repairOrders
+     * @param RepairOrder $repairOrders
      * @return User
      */
     public function addRepairOrder(RepairOrder $repairOrders)
@@ -198,7 +273,7 @@ class User
     /**
      * Remove repair_orders
      *
-     * @param \AppBundle\Entity\RepairOrder $repairOrders
+     * @param RepairOrder $repairOrders
      */
     public function removeRepairOrder(RepairOrder $repairOrders)
     {
@@ -218,7 +293,7 @@ class User
     /**
      * Set role
      *
-     * @param \AppBundle\Entity\Role $role
+     * @param Role $role
      * @return User
      */
     public function setRole(Role $role = null)
@@ -231,10 +306,42 @@ class User
     /**
      * Get role
      *
-     * @return \AppBundle\Entity\Role 
+     * @return Role
      */
     public function getRole()
     {
         return $this->role;
+    }
+
+    public function getRoles()
+    {
+        return array($this->getRole());
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt,
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized);
     }
 }

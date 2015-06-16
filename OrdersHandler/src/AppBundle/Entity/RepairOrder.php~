@@ -3,24 +3,18 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Form\RepairOrderType;
 
 /**
  * RepairOrder
  */
 class RepairOrder
 {
-    const STATUS_OPEN = 'Open';
-    const STATUS_ASSIGNED = 'Assigned';
-    const STATUS_IN_PROCESS = 'In process';
-    const STATUS_RESOLVED = 'Resolved';
-    const STATUS_CLOSED = 'Closed';
-    const STATUS_REOPENED = 'Reopened';
 
     /**
      * @var integer
      */
     private $id;
-
 
     /**
      * Get id
@@ -42,7 +36,7 @@ class RepairOrder
     private $address;
 
     /**
-     * @var string
+     * @var integer
      */
     private $status;
 
@@ -106,12 +100,12 @@ class RepairOrder
     /**
      * Set status
      *
-     * @param string $status
+     * @param integer $status
      * @return RepairOrder
      */
     public function setStatus($status)
     {
-        if (!in_array($status, array(self::STATUS_OPEN, self::STATUS_ASSIGNED, self::STATUS_IN_PROCESS, self::STATUS_RESOLVED, self::STATUS_CLOSED, self::STATUS_REOPENED))) {
+        if (!in_array($status, array_keys(RepairOrderType::getStatusValues()))) {
             throw new \InvalidArgumentException("Invalid status");
         }
         $this->status = $status;
@@ -122,7 +116,7 @@ class RepairOrder
     /**
      * Get status
      *
-     * @return string 
+     * @return integer
      */
     public function getStatus()
     {
@@ -132,10 +126,10 @@ class RepairOrder
     /**
      * Set user
      *
-     * @param \AppBundle\Entity\User $user
+     * @param User $user
      * @return RepairOrder
      */
-    public function setUser(\AppBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -145,7 +139,7 @@ class RepairOrder
     /**
      * Get user
      *
-     * @return \AppBundle\Entity\User 
+     * @return User
      */
     public function getUser()
     {
@@ -155,10 +149,10 @@ class RepairOrder
     /**
      * Set company
      *
-     * @param \AppBundle\Entity\Company $company
+     * @param Company $company
      * @return RepairOrder
      */
-    public function setCompany(\AppBundle\Entity\Company $company = null)
+    public function setCompany(Company $company = null)
     {
         $this->company = $company;
 
@@ -168,7 +162,7 @@ class RepairOrder
     /**
      * Get company
      *
-     * @return \AppBundle\Entity\Company 
+     * @return Company
      */
     public function getCompany()
     {

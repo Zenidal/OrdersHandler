@@ -3,11 +3,12 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  * Role
  */
-class Role
+class Role implements RoleInterface
 {
     const ROLE_CUSTOMER = 'Customer';
     const ROLE_MANAGER = 'Manager';
@@ -103,5 +104,15 @@ class Role
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Реализация метода, требуемого интерфейсом RoleInterface.
+     *
+     * @return string The role.
+     */
+    public function getRole()
+    {
+        return $this->getName();
     }
 }

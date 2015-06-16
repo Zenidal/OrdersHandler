@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Company
@@ -39,7 +40,7 @@ class Company
      */
     public function __construct()
     {
-        $this->place = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->place = new ArrayCollection();
     }
 
     /**
@@ -68,10 +69,10 @@ class Company
     /**
      * Add place
      *
-     * @param \AppBundle\Entity\Place $place
+     * @param Place $place
      * @return Company
      */
-    public function addPlace(\AppBundle\Entity\Place $place)
+    public function addPlace(Place $place)
     {
         $this->place[] = $place;
 
@@ -81,9 +82,9 @@ class Company
     /**
      * Remove place
      *
-     * @param \AppBundle\Entity\Place $place
+     * @param Place $place
      */
-    public function removePlace(\AppBundle\Entity\Place $place)
+    public function removePlace(Place $place)
     {
         $this->place->removeElement($place);
     }
@@ -121,10 +122,10 @@ class Company
     /**
      * Add users
      *
-     * @param \AppBundle\Entity\User $users
+     * @param User $users
      * @return Company
      */
-    public function addUser(\AppBundle\Entity\User $users)
+    public function addUser(User $users)
     {
         $this->users[] = $users;
 
@@ -136,7 +137,7 @@ class Company
      *
      * @param \AppBundle\Entity\User $users
      */
-    public function removeUser(\AppBundle\Entity\User $users)
+    public function removeUser(User $users)
     {
         $this->users->removeElement($users);
     }

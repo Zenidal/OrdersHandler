@@ -4,11 +4,13 @@
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
-        <field name="username" type="string" length="50"/>
-        <field name="password_hash" type="string" length="100"/>
+        <field name="username" type="string" length="50" unique="true"/>
+        <field name="password" type="string" length="100"/>
+        <field name="isActive" type="boolean"/>
+        <field name="salt" type="string" length="255" nullable="true"/>
         <field name="name" type="string" length="50"/>
         <field name="surname" type="string" length="50"/>
-        <field name="email" type="string" length="50" unique="true"/>
+        <field name="email" type="string" length="50" nullable="true"/>
 
         <one-to-many target-entity="RepairOrder" mapped-by="user" field="repair_orders">
             <cascade>
