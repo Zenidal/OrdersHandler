@@ -105,9 +105,6 @@ class RepairOrder
      */
     public function setStatus($status)
     {
-        if (!in_array($status, array_keys(RepairOrderType::getStatusValues()))) {
-            throw new \InvalidArgumentException("Invalid status");
-        }
         $this->status = $status;
 
         return $this;
@@ -167,5 +164,33 @@ class RepairOrder
     public function getCompany()
     {
         return $this->company;
+    }
+    /**
+     * @var \AppBundle\Entity\Place
+     */
+    private $place;
+
+
+    /**
+     * Set place
+     *
+     * @param \AppBundle\Entity\Place $place
+     * @return RepairOrder
+     */
+    public function setPlace(\AppBundle\Entity\place $place = null)
+    {
+        $this->place = $place;
+
+        return $this;
+    }
+
+    /**
+     * Get place
+     *
+     * @return \AppBundle\Entity\Place
+     */
+    public function getPlace()
+    {
+        return $this->place;
     }
 }

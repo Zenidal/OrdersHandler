@@ -25,6 +25,9 @@ security:
         repair_orders_firewall:
             pattern: ^/repair_orders$
             anonymous: ~
+        repairorder_new_firewall:
+            pattern: ^/repair_orders/new$
+            anonymous: ~
         secured_area:
             pattern:    ^/
             form_login: ~
@@ -45,4 +48,5 @@ security:
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register/create, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/repair_orders, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/repair_orders/new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

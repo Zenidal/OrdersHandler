@@ -9,5 +9,6 @@
     <field name="status" type="string" length="20"/>
     <many-to-one field="user" target-entity="User" inversed-by="repair_order" />
     <many-to-one field="company" target-entity="Company" inversed-by="repair_order" />
+    <many-to-one field="place" target-entity="Place" inversed-by="repair_order" />
   </entity>
 </doctrine-mapping>

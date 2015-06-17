@@ -1,45 +1,37 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>RepairOrder list</h1>
+    <div class="repair_orders">
+        <div class="container-fluid">
+            <legend>Repair orders</legend>
+            <a href="{{ path('repairorder_new') }}"><h1>+</h1></a>
 
-    <table class="records_list">
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Address</th>
-                <th>Status</th>
-                <th>Id</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('repairorder_show', { 'id': entity.id }) }}">{{ entity.description }}</a></td>
-                <td>{{ entity.address }}</td>
-                <td>{{ entity.status }}</td>
-                <td>{{ entity.id }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('repairorder_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('repairorder_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-        <ul>
-        <li>
-            <a href="{{ path('repairorder_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
+            <table class="records_list table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>User</th>
+                    <th>Company</th>
+                    <th>Place</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entity in entities %}
+                    <tr>
+                        <td>{{ entity.id }}</td>
+                        <td>{{ entity.getUser().username }}</td>
+                        <td>{{ entity.getCompany().name }}</td>
+                        <td>{{ entity.getPlace().name }}</td>
+                        <td>{{ entity.description }}</td>
+                        <td>{{ entity.address }}</td>
+                        <td>{{ entity.status }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
     {% endblock %}

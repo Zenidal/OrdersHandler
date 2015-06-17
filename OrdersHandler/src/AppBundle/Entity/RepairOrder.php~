@@ -168,4 +168,32 @@ class RepairOrder
     {
         return $this->company;
     }
+    /**
+     * @var \AppBundle\Entity\Place
+     */
+    private $place;
+
+
+    /**
+     * Set place
+     *
+     * @param \AppBundle\Entity\Place $place
+     * @return RepairOrder
+     */
+    public function setPlace(\AppBundle\Entity\place $place = null)
+    {
+        $this->place = $place;
+
+        return $this;
+    }
+
+    /**
+     * Get place
+     *
+     * @return \AppBundle\Entity\Place
+     */
+    public function getPlace()
+    {
+        return $this->place;
+    }
 }

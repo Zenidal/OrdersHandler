@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\RepairOrder;
-use AppBundle\Form\RepairOrderType;
+use AppBundle\Form\Type\RepairOrderType;
 
 /**
  * RepairOrder controller.
@@ -49,6 +49,7 @@ class RepairOrderController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $entity->setStatus(1);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();

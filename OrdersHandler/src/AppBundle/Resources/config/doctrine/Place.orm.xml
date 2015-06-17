@@ -5,6 +5,11 @@
             <generator strategy="AUTO"/>
         </id>
         <field name="name" type="string" length="100"/>
+        <one-to-many target-entity="RepairOrder" mapped-by="place" field="repairOrders">
+            <cascade>
+                <cascade-all/>
+            </cascade>
+        </one-to-many>
         <many-to-one field="company" target-entity="Company" inversed-by="place" />
     </entity>
 </doctrine-mapping>

@@ -107,4 +107,49 @@ class Place
     {
         return $this->company;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $repairOrders;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->repairOrders = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add repairOrders
+     *
+     * @param \AppBundle\Entity\RepairOrder $repairOrders
+     * @return Place
+     */
+    public function addRepairOrder(\AppBundle\Entity\RepairOrder $repairOrders)
+    {
+        $this->repairOrders[] = $repairOrders;
+
+        return $this;
+    }
+
+    /**
+     * Remove repairOrders
+     *
+     * @param \AppBundle\Entity\RepairOrder $repairOrders
+     */
+    public function removeRepairOrder(\AppBundle\Entity\RepairOrder $repairOrders)
+    {
+        $this->repairOrders->removeElement($repairOrders);
+    }
+
+    /**
+     * Get repairOrders
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRepairOrders()
+    {
+        return $this->repairOrders;
+    }
 }

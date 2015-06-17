@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Form;
+namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -41,7 +41,7 @@ class RepairOrderType extends AbstractType
         $builder
             ->add('description')
             ->add('address')
-            ->add('status', 'choice', ['choices' => self::getStatusValues()])
+            ->add('submit', 'submit');
         ;
     }
     
