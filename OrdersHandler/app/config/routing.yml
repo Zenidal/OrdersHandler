@@ -27,4 +27,9 @@ repair_orders:
 
 repairorder_new:
     path:     /repair_orders/new
+    defaults: { _controller: AppBundle:RepairOrder:new }
+
+
+repairorder_create:
+    path:     /repair_orders/create
     defaults: { _controller: AppBundle:RepairOrder:create }
