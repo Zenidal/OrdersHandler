@@ -19,7 +19,10 @@ class AccountController extends Controller
 
         return $this->render(
             'AppBundle:account:register.html.twig',
-            array('form' => $form->createView())
+            array(
+                'form' => $form->createView(),
+                'errors' => null
+            )
         );
     }
 
@@ -34,7 +37,14 @@ class AccountController extends Controller
         if ($form->isValid()) {
             $registration = $form->getData();
 
-            $em->persist($registration->getUser());
+            $user = $registration->getUser();
+            $factory = $this->get('security.encoder_factory');
+
+            $encoder = $factory->getEncoder($user);
+            $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
+            $user->setPassword($password);
+
+            $em->persist($user);
             $em->flush();
 
             return $this->redirectToRoute('login');

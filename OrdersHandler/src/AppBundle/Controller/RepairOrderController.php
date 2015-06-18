@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\RepairOrder;
 use AppBundle\Form\Type\RepairOrderType;
 
+/*?><script>alert('da')</script><?php*/
 /**
  * RepairOrder controller.
  *
@@ -22,7 +23,7 @@ class RepairOrderController extends Controller
     /**
      * Lists all RepairOrder entities.
      *
-     * @Route("/", name="repairorder")
+     * @Route("/repair_orders", name="repair_orders")
      * @Method("GET")
      * @Template()
      */
@@ -39,13 +40,16 @@ class RepairOrderController extends Controller
     /**
      * Creates a new RepairOrder entity.
      *
-     * @Route("/", name="repairorder_create")
+     * @Route("/create", name="repairorder_create")
      * @Method("POST")
      * @Template("AppBundle:RepairOrder:new.html.twig")
      */
     public function createAction(Request $request)
     {
         $entity = new RepairOrder();
+        $entity->setStatus(1);
+        $user = $this->getDoctrine()->getManager()->find("AppBundle:User", 1);
+        $entity->setUser($user);
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 

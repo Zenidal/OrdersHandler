@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use AppBundle\Form\RepairOrderType;
 
 /**
@@ -54,6 +55,13 @@ class RepairOrder
 
     /**
      * @var string
+     * @Assert\NotBlank(
+     *      message="Description can not be blank."
+     * )
+     * @Assert\Length(
+     *      min = 10,
+     *      minMessage = "The description should contain at least 10 characters"
+     * )
      */
     private $description;
 
