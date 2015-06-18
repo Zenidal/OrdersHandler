@@ -9,6 +9,7 @@
             <table class="records_list table">
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Id</th>
                     <th>User</th>
                     <th>Company</th>
@@ -21,6 +22,13 @@
                 <tbody>
                 {% for entity in entities %}
                     <tr>
+                        <td>
+                            <select class="form-control">
+                                <option>Edit</option>
+                                <option>Delete</option>
+                                <option>Show</option>
+                            </select>
+                        </td>
                         <td>{{ entity.id }}</td>
                         <td>{{ entity.getUser().username }}</td>
                         <td>{{ entity.getCompany().name }}</td>

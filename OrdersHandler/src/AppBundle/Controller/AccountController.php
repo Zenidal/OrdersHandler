@@ -38,11 +38,13 @@ class AccountController extends Controller
             $em->flush();
 
             return $this->redirectToRoute('login');
+        } else {
+            return $this->render(
+                'AppBundle:account:register.html.twig', array(
+                    'form' => $form->createView(),
+                    'errors' => $errors = $this->get('validator')->validate($form)
+                )
+            );
         }
-
-        return $this->render(
-            'AppBundle:account:register.html.twig',
-            array('form' => $form->createView())
-        );
     }
 }

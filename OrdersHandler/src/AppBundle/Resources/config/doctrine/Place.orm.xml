@@ -10,6 +10,6 @@
                 <cascade-all/>
             </cascade>
         </one-to-many>
-        <many-to-one field="company" target-entity="Company" inversed-by="place" />
+        <many-to-many field="company" target-entity="Company" inversed-by="place" />
     </entity>
 </doctrine-mapping>

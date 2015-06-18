@@ -10,6 +10,32 @@ use AppBundle\Form\RepairOrderType;
  */
 class RepairOrder
 {
+    private static function getStatusByValue($value)
+    {
+        switch ($value)
+        {
+            case 1:
+                return "Open";
+                break;
+            case 2:
+                return "Assigned";
+                break;
+            case 3:
+                return "In process";
+                break;
+            case 4:
+                return "Resolved";
+                break;
+            case 5:
+                return "Closed";
+                break;
+            case 6:
+                return "Reopened";
+                break;
+            default:
+                return "Unknown status";
+        }
+    }
 
     /**
      * @var integer
@@ -19,12 +45,13 @@ class RepairOrder
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
     }
+
     /**
      * @var string
      */
@@ -67,7 +94,7 @@ class RepairOrder
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -90,7 +117,7 @@ class RepairOrder
     /**
      * Get address
      *
-     * @return string 
+     * @return string
      */
     public function getAddress()
     {
@@ -117,7 +144,7 @@ class RepairOrder
      */
     public function getStatus()
     {
-        return $this->status;
+        return RepairOrder::getStatusByValue($this->status);
     }
 
     /**
@@ -165,6 +192,7 @@ class RepairOrder
     {
         return $this->company;
     }
+
     /**
      * @var \AppBundle\Entity\Place
      */

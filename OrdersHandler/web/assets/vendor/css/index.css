@@ -6,3 +6,8 @@
 {
     color: red;
 }
+.error
+{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}

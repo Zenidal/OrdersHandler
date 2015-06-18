@@ -5,27 +5,42 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * User
+ * @ORM\Entity
+ * @UniqueEntity(
+ *      "username",
+ *      message="Username is already exists."
+ * )
  */
 class User implements UserInterface, \Serializable
 {
     /**
-     * @var string
+     * @var string $username
+     * @Assert\NotBlank(
+     *      message="Username can not be blank."
+     * )
      * @Assert\Length(
      *      min = 6,
      *      max = 50,
-     *      minMessage = "Trrrrrrrrr"
+     *      minMessage = "Username must be between 6 and 50 characters.",
+     *      maxMessage = "Username must be between 6 and 50 characters."
      * )
      */
     private $username;
 
     /**
      * @var string
+     * @Assert\NotBlank(
+     *      message="Password can not be blank."
+     * )
      * @Assert\Length(
      *      min = 6,
-     *      max = 50
+     *      max = 50,
+     *      minMessage = "Password must be between 6 and 50 characters.",
+     *      maxMessage = "Password must be between 6 and 50 characters."
      * )
      */
     private $password;
@@ -37,9 +52,14 @@ class User implements UserInterface, \Serializable
 
     /**
      * @var string
+     * @Assert\NotBlank(
+     *      message="First name can not be blank."
+     * )
      * @Assert\Length(
      *      min = 6,
-     *      max = 50
+     *      max = 50,
+     *      minMessage = "First name must be between 6 and 50 characters.",
+     *      maxMessage = "First name must be between 6 and 50 characters."
      * )
      */
     private $name;
@@ -48,26 +68,32 @@ class User implements UserInterface, \Serializable
      * @var string
      * @Assert\Length(
      *      min = 6,
-     *      max = 50
+     *      max = 50,
+     *      minMessage = "Surname must be between 6 and 50 characters.",
+     *      maxMessage = "Surname must be between 6 and 50 characters."
      * )
      */
     private $surname;
 
     /**
      * @var string
+     * @Assert\NotBlank(
+     *      message="E-mail can not be blank."
+     * )
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email."
+     * )
      * @Assert\Length(
      *      min = 6,
-     *      max = 50
+     *      max = 50,
+     *      minMessage = "E-mail must be between 6 and 50 characters.",
+     *      maxMessage = "E-mail must be between 6 and 50 characters."
      * )
      */
     private $email;
 
     /**
      * @var integer
-     * @Assert\Length(
-     *      min = 6,
-     *      max = 50
-     * )
      */
     private $id;
 

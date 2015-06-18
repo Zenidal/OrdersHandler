@@ -152,4 +152,27 @@ class Place
     {
         return $this->repairOrders;
     }
+
+    /**
+     * Add company
+     *
+     * @param \AppBundle\Entity\Company $company
+     * @return Place
+     */
+    public function addCompany(\AppBundle\Entity\Company $company)
+    {
+        $this->company[] = $company;
+
+        return $this;
+    }
+
+    /**
+     * Remove company
+     *
+     * @param \AppBundle\Entity\Company $company
+     */
+    public function removeCompany(\AppBundle\Entity\Company $company)
+    {
+        $this->company->removeElement($company);
+    }
 }

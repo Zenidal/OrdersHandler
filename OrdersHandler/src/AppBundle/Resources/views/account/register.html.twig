@@ -3,7 +3,11 @@
     <div class="register">
         <div class="container-fluid">
             <div class="register-error">
-                {{ form_errors(form) }}
+                {% for error in errors %}
+                    <div class="error text-danger">
+                        {{ error.getMessage() }}
+                    </div>
+                {% endfor %}
             </div>
             <div class="register-form">
                 {{ form_start(form) }}
