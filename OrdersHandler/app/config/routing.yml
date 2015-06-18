@@ -33,3 +33,7 @@ repairorder_new:
 repairorder_create:
     path:     /repair_orders/create
     defaults: { _controller: AppBundle:RepairOrder:create }
+
+profile:
+    path:     /profile
+    defaults: { _controller: AppBundle:Profile:index }

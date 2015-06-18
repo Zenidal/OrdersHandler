@@ -13,6 +13,9 @@ security:
         index_firewall:
             pattern: ^/home$
             anonymous: ~
+        profile_firewall:
+            pattern: ^/profile$
+            anonymous: ~
         register_firewall:
             pattern: ^/register$
             anonymous: ~
