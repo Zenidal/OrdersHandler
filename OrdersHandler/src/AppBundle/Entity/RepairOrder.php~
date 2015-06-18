@@ -105,9 +105,6 @@ class RepairOrder
      */
     public function setStatus($status)
     {
-        if (!in_array($status, array_keys(RepairOrderType::getStatusValues()))) {
-            throw new \InvalidArgumentException("Invalid status");
-        }
         $this->status = $status;
 
         return $this;

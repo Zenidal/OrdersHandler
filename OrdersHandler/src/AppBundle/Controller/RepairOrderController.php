@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -49,7 +50,6 @@ class RepairOrderController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $entity->setStatus(1);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();

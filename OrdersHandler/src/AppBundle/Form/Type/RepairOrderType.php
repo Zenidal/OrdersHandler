@@ -4,6 +4,7 @@ namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -41,10 +42,17 @@ class RepairOrderType extends AbstractType
         $builder
             ->add('description')
             ->add('address')
-            ->add('submit', 'submit');
-        ;
+            ->add('submit', 'submit')
+            ->add('company', 'entity', array(
+                'class' => 'AppBundle:Company',
+                'property' => 'name',
+            ))
+            ->add('place', 'entity', array(
+                'class' => 'AppBundle:Place',
+                'property' => 'name',
+            ));
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
