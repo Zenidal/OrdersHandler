@@ -12,6 +12,7 @@ use AppBundle\Entity\RepairOrder;
 use AppBundle\Form\Type\RepairOrderType;
 
 /*?><script>alert('da')</script><?php*/
+
 /**
  * RepairOrder controller.
  *
@@ -37,6 +38,7 @@ class RepairOrderController extends Controller
             'entities' => $entities,
         );
     }
+
     /**
      * Creates a new RepairOrder entity.
      *
@@ -48,7 +50,7 @@ class RepairOrderController extends Controller
     {
         $entity = new RepairOrder();
         $entity->setStatus(1);
-        $user = $this->getDoctrine()->getManager()->find("AppBundle:User", 1);
+        $user = $this->getDoctrine()->getManager()->find("AppBundle:User", 5);
         $entity->setUser($user);
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -63,7 +65,7 @@ class RepairOrderController extends Controller
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -96,11 +98,11 @@ class RepairOrderController extends Controller
     public function newAction()
     {
         $entity = new RepairOrder();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -121,11 +123,8 @@ class RepairOrderController extends Controller
             throw $this->createNotFoundException('Unable to find RepairOrder entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
-
         return array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
+            'entity' => $entity
         );
     }
 
@@ -147,22 +146,20 @@ class RepairOrderController extends Controller
         }
 
         $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView()
         );
     }
 
     /**
-    * Creates a form to edit a RepairOrder entity.
-    *
-    * @param RepairOrder $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a RepairOrder entity.
+     *
+     * @param RepairOrder $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(RepairOrder $entity)
     {
         $form = $this->createForm(new RepairOrderType(), $entity, array(
@@ -174,6 +171,7 @@ class RepairOrderController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing RepairOrder entity.
      *
@@ -191,46 +189,34 @@ class RepairOrderController extends Controller
             throw $this->createNotFoundException('Unable to find RepairOrder entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('repairorder_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('repairorder_show', array('id' => $id)));
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView()
         );
     }
+
     /**
      * Deletes a RepairOrder entity.
      *
-     * @Route("/{id}", name="repairorder_delete")
-     * @Method("DELETE")
+     * @Route("/{id}/delete", name="repairorder_delete")
+     * @Method("GET")
+     * @Template()
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction($id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
+        $deleteForm = $this->createDeleteForm($id);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AppBundle:RepairOrder')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find RepairOrder entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
-        }
-
-        return $this->redirect($this->generateUrl('repairorder'));
+        return array('delete_form' => $deleteForm->createView()
+        );
     }
 
     /**
@@ -243,10 +229,35 @@ class RepairOrderController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('repairorder_delete', array('id' => $id)))
-            ->setMethod('DELETE')
+            ->setAction($this->generateUrl('repairorder_remove', array(
+                'id' => $id
+            )))
+            ->setMethod('POST')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
+    }
+
+    /**
+     * @Route("/{id}/remove", name="repairorder_remove")
+     * @Method("POST")
+     * @Template("AppBundle:RepairOrder:delete.html.twig")
+     */
+    public function removeAction(Request $request, $id)
+    {
+        $deleteForm = $this->createDeleteForm($id);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:RepairOrder')->find($id);
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+        }
+
+        $deleteForm->handleRequest($request);
+        if ($deleteForm->isValid()) {
+            $em->remove($entity);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('repair_orders'));
+        }
+        return array('deleteForm' => $deleteForm->createView());
     }
 }

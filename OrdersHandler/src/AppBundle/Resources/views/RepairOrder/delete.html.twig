@@ -1,0 +1,19 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="delete_repairorder">
+        <div class="container-fluid">
+            <legend>
+                Deletion Repair Order
+            </legend>
+            <div class="repair_orders_new-error">
+                {{ form_errors(delete_form) }}
+            </div>
+            <div class="repair_orders_delete-form">
+                {{ form_start(delete_form) }}
+                {{ form_widget(delete_form.submit, { 'attr': {'class': 'btn btn-default'} }) }}
+                {{ form_end(delete_form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

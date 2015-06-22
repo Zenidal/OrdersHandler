@@ -1,16 +1,33 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>RepairOrder edit</h1>
-
-    {{ form(edit_form) }}
-
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('repairorder') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    <div class="edit_repairorder">
+        <div class="container-fluid">
+            <legend>Repair order alteration</legend>
+            <div class="repair_orders_new-error">
+                {{ form_errors(edit_form) }}
+            </div>
+            <div class="repair_orders_new-form">
+                {{ form_start(edit_form) }}
+                <div class="form-group">
+                    <label for="repairOrder_description">Description</label>
+                    {{ form_widget(edit_form.description, { 'attr': {'class': 'form-control', 'placeholder': 'Enter description'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="repairOrder_address">Address</label>
+                    {{ form_widget(edit_form.address, { 'attr': {'class': 'form-control', 'placeholder': 'Enter address'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="repairOrder_company">Company</label>
+                    {{ form_widget(edit_form.company, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="repairOrder_place">Place</label>
+                    {{ form_widget(edit_form.place, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+                {{ form_widget(edit_form.submit, { 'attr': {'class': 'btn btn-default'} }) }}
+                {{ form_end(edit_form) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -1,40 +1,46 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>RepairOrder</h1>
-
-    <table class="record_properties">
-        <tbody>
-            <tr>
-                <th>Description</th>
-                <td>{{ entity.description }}</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>{{ entity.address }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ entity.status }}</td>
-            </tr>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('repairorder') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('repairorder_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    <div class="repairorder">
+        <div class="container-fluid">
+            <legend>
+                <a class="glyphicon glyphicon-list-alt" href="/repair_orders"></a>
+                <a class="glyphicon glyphicon-pencil" href="/repair_orders/{{ entity.id }}/edit"></a>
+                <a class="glyphicon glyphicon-remove" href="/repair_orders/{{ entity.id }}/delete"></a>
+                RepairOrder
+            </legend>
+            <table class="record_properties table">
+                <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ entity.id }}</td>
+                </tr>
+                <tr>
+                    <th>User</th>
+                    <td>{{ entity.getUser().username }}</td>
+                </tr>
+                <tr>
+                    <th>Company</th>
+                    <td>{{ entity.getCompany().name }}</td>
+                </tr>
+                <tr>
+                    <th>Place</th>
+                    <td>{{ entity.getPlace().name }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ entity.description }}</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ entity.address }}</td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td>{{ entity.status }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

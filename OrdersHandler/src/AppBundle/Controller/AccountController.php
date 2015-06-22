@@ -47,7 +47,7 @@ class AccountController extends Controller
             $em->persist($user);
             $em->flush();
 
-            return $this->redirectToRoute('login');
+            return $this->redirectToRoute('profile');
         } else {
             return $this->render(
                 'AppBundle:account:register.html.twig', array(

@@ -10,33 +10,48 @@ security:
                 property: username
 
     firewalls:
-        index_firewall:
+        index:
             pattern: ^/home$
             anonymous: ~
-        profile_firewall:
+        profile:
             pattern: ^/profile$
             anonymous: ~
-        register_firewall:
+        register:
             pattern: ^/register$
             anonymous: ~
-        register_create_firewall:
+        register_create:
             pattern: ^/register/create$
             anonymous: ~
-        login_firewall:
+        login:
             pattern:   ^/login$
             anonymous: ~
-        repair_orders_firewall:
+        repair_orders:
             pattern: ^/repair_orders$
             anonymous: ~
-        repairorder_new_firewall:
+        repairorder_new:
             pattern: ^/repair_orders/new$
             anonymous: ~
-        repairorder_create_firewall:
+        repairorder_create:
             pattern: ^/repair_orders/create$
+            anonymous: ~
+        repairorder_delete:
+            pattern: ^/repair_orders/{id}/delete$
+            anonymous: ~
+        repairorder_remove:
+            pattern: ^/repair_orders/{id}/remove$
+            anonymous: ~
+        repairorder_edit:
+            pattern: ^/repair_orders/{id}/edit$
+            anonymous: ~
+        repairorder_show:
+            pattern: ^/repair_orders/{id}$
             anonymous: ~
         secured_area:
             pattern:    ^/
             form_login: ~
+            logout:
+                path:   /logout
+                target: /home
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
             security: false
@@ -49,11 +64,11 @@ security:
             form_login:
                 login_path: /login
                 check_path: /login_check
+                remember_me: true
+            remember_me:
+                key:      "%secret%"
+                lifetime: 604800 # 1 week in seconds
+                path:     /
+                domain:   ~
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register/create, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/repair_orders, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/repair_orders/new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/repair_orders/create, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
