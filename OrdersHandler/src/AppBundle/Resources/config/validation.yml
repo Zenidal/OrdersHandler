@@ -1,14 +1,5 @@
 AppBundle\Entity\RepairOrder:
     properties:
-        description:
-            - NotBlank:
-                message: 'Description should not be blank'
-                groups: [repairOrder]
-
-AppBundle\Entity\User:
-    properties:
-        firstName:
-            - NotBlank:
-                message: 'Name should not be blank'
-                groups: [user]
-
+        address:
+        - NotBlank: { groups: [default] }
+        - Length: { min: 7, groups: [default] }

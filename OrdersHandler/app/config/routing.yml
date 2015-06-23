@@ -46,6 +46,10 @@ repairorder_show:
     pattern:     /repair_orders/{id}
     defaults: { _controller: AppBundle:RepairOrder:show }
 
+repairorder_update:
+    path:     /repair_orders/{id}/update
+    defaults: { _controller: AppBundle:RepairOrder:update }
+
 profile:
     pattern:     /profile
     defaults: { _controller: AppBundle:Profile:index }
