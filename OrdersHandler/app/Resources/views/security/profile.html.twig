@@ -3,6 +3,10 @@
     <div class="profile">
         <div class="container-fluid">
             <legend><h1>Profile</h1></legend>
+            {% for element in data %}
+            {{ element }}</br>
+            {% endfor %}
+
             <a class="btn btn-lg btn-default" href="/logout">
                 Log out
             </a>

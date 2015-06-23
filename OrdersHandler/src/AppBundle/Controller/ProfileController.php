@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class ProfileController extends Controller
 {
@@ -13,6 +14,7 @@ class ProfileController extends Controller
         $session = $request->getSession();
         return $this->render('security/profile.html.twig',
             array(
+                'data' => $session->all(),
             ));
     }
 }
