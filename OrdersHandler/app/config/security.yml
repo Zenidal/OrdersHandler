@@ -9,10 +9,6 @@ security:
                 class: AppBundle:User
 
     firewalls:
-#        public:
-#            pattern:  ^/(home|profile|register|login|repair_orders|repair_orders/new|repair_orders/create|repair_orders/{id}/delete|reset-password|change-password|user/search|api/doc/*)$
-#            security: false
-#            anonymous: ~
 
         public:
             pattern:  ^/(home|register)$
@@ -43,16 +39,6 @@ security:
                 lifetime: 604800 # 1 week in seconds
                 path:     /
                 domain:   ~
-
-#        repairorder_remove:
-#            pattern: ^/repair_orders/{id}/remove$
-#            anonymous: ~
-#        repairorder_edit:
-#            pattern: ^/repair_orders/{id}/edit$
-#            anonymous: ~
-#        repairorder_show:
-#            pattern: ^/repair_orders/{id}$
-#            anonymous: ~
 
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/

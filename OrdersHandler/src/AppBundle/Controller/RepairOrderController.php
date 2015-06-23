@@ -23,10 +23,12 @@ class RepairOrderController extends Controller
 
     public function createAction(Request $request)
     {
+        $user = $this->getUser();
+
         $entity = new RepairOrder();
-        $entity->setStatus(1);
-        $user = $this->getDoctrine()->getManager()->find("AppBundle:User", 5);
+        $entity->setStatus(RepairOrderType::STATUS_OPEN);
         $entity->setUser($user);
+
         $form = $this->createForm(new RepairOrderType(), $entity, array(
             'action' => $this->generateUrl('repairorder_create'),
         ));
@@ -73,7 +75,6 @@ class RepairOrderController extends Controller
             throw $this->createNotFoundException('Unable to find RepairOrder entity.');
         }
 
-        return ['entity' => $entity];
         return $this->render('AppBundle:RepairOrder:show.html.twig', array(
                 'entity' => $entity
             )

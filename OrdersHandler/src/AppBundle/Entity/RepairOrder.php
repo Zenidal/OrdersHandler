@@ -44,6 +44,11 @@ class RepairOrder
     private $status;
 
     /**
+     * @var string
+     */
+    private $textStatus;
+
+    /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
@@ -224,5 +229,13 @@ class RepairOrder
     public function getPlace()
     {
         return $this->place;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTextStatus()
+    {
+       return RepairOrderType::getStatusByValue($this->status);
     }
 }

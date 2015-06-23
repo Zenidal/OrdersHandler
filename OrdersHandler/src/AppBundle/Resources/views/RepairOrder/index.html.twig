@@ -25,7 +25,7 @@
                         </td>
                         <td>{{ entity.id }}</td>
                         <td>{{ entity.getUser() ? entity.getUser().getUsername() : '' }}</td>
-                        <td>{{ entity.getCompany() ? entity.getCompany().getFirstName() : '' }}</td>
+                        <td>{{ entity.getCompany() ? entity.getCompany().getName() : '' }}</td>
                         <td>{{ entity.getPlace() ? entity.getPlace().getName() : '' }}</td>
                         <td>{{ entity.getDescription() }}</td>
                         <td>{{ entity.getAddress() }}</td>

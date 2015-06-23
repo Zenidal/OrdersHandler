@@ -17,15 +17,15 @@
                 </tr>
                 <tr>
                     <th>User</th>
-                    <td>{{ entity.getUser().username }}</td>
+                    <td>{{ entity.getUser() ? entity.getUser().username : '' }}</td>
                 </tr>
                 <tr>
                     <th>Company</th>
-                    <td>{{ entity.getCompany().name }}</td>
+                    <td>{{ entity.getCompany() ? entity.getCompany().name : '' }}</td>
                 </tr>
                 <tr>
                     <th>Place</th>
-                    <td>{{ entity.getPlace().name }}</td>
+                    <td>{{ entity.getPlace() ? entity.getPlace().name : ''}}</td>
                 </tr>
                 <tr>
                     <th>Description</th>
@@ -37,7 +37,7 @@
                 </tr>
                 <tr>
                     <th>Status</th>
-                    <td>{{ entity.status }}</td>
+                    <td>{{ entity.textStatus }}</td>
                 </tr>
                 </tbody>
             </table>
