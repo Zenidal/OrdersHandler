@@ -6,32 +6,33 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Place
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="place")
  */
 class Place
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-    /**
-     * @var string
+     * @ORM\Column(type="string", length=100)
      */
     private $name;
 
     /**
-     * @var \AppBundle\Entity\Company
+     * @var Company
+     *
+     * @ORM\ManyToOne(targetEntity="Company")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
      */
-    private $place;
+    private $company;
 
 
     /**
@@ -58,37 +59,19 @@ class Place
     }
 
     /**
-     * Set place
+     * Get id
      *
-     * @param Company $place
-     * @return Place
+     * @return integer 
      */
-    public function setPlace(Company $place = null)
+    public function getId()
     {
-        $this->place = $place;
-
-        return $this;
+        return $this->id;
     }
-
-    /**
-     * Get place
-     *
-     * @return Company
-     */
-    public function getPlace()
-    {
-        return $this->place;
-    }
-    /**
-     * @var Company
-     */
-    private $company;
-
 
     /**
      * Set company
      *
-     * @param Company $company
+     * @param \AppBundle\Entity\Company $company
      * @return Place
      */
     public function setCompany(Company $company = null)
@@ -101,78 +84,10 @@ class Place
     /**
      * Get company
      *
-     * @return Company
+     * @return \AppBundle\Entity\Company 
      */
     public function getCompany()
     {
         return $this->company;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $repairOrders;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->repairOrders = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add repairOrders
-     *
-     * @param \AppBundle\Entity\RepairOrder $repairOrders
-     * @return Place
-     */
-    public function addRepairOrder(\AppBundle\Entity\RepairOrder $repairOrders)
-    {
-        $this->repairOrders[] = $repairOrders;
-
-        return $this;
-    }
-
-    /**
-     * Remove repairOrders
-     *
-     * @param \AppBundle\Entity\RepairOrder $repairOrders
-     */
-    public function removeRepairOrder(\AppBundle\Entity\RepairOrder $repairOrders)
-    {
-        $this->repairOrders->removeElement($repairOrders);
-    }
-
-    /**
-     * Get repairOrders
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getRepairOrders()
-    {
-        return $this->repairOrders;
-    }
-
-    /**
-     * Add company
-     *
-     * @param \AppBundle\Entity\Company $company
-     * @return Place
-     */
-    public function addCompany(\AppBundle\Entity\Company $company)
-    {
-        $this->company[] = $company;
-
-        return $this;
-    }
-
-    /**
-     * Remove company
-     *
-     * @param \AppBundle\Entity\Company $company
-     */
-    public function removeCompany(\AppBundle\Entity\Company $company)
-    {
-        $this->company->removeElement($company);
     }
 }

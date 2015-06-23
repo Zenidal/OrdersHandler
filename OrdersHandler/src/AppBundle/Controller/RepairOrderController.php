@@ -123,9 +123,7 @@ class RepairOrderController extends Controller
             throw $this->createNotFoundException('Unable to find RepairOrder entity.');
         }
 
-        return array(
-            'entity' => $entity
-        );
+        return ['entity' => $entity];
     }
 
     /**

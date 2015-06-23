@@ -7,14 +7,18 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Company
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="company")
  */
 class Company
 {
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
 
     /**
      * Get id
@@ -25,22 +29,33 @@ class Company
     {
         return $this->id;
     }
+
     /**
-     * @var string
+     * @ORM\Column(type="string", length=100)
      */
     private $name;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Place[]
+     *
+     * @ORM\OneToMany(targetEntity="Place", mappedBy="company", cascade={"remove"})
      */
-    private $place;
+    private $places;
+
+    /**
+     * @var User[]
+     *
+     * @ORM\OneToMany(targetEntity="User", mappedBy="company", cascade={"remove"})
+     */
+    private $users;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->place = new ArrayCollection();
+        $this->places = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -74,7 +89,7 @@ class Company
      */
     public function addPlace(Place $place)
     {
-        $this->place[] = $place;
+        $this->places[] = $place;
 
         return $this;
     }
@@ -86,38 +101,8 @@ class Company
      */
     public function removePlace(Place $place)
     {
-        $this->place->removeElement($place);
+        $this->places->removeElement($place);
     }
-
-    /**
-     * Get place
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPlace()
-    {
-        return $this->place;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $places;
-
-
-    /**
-     * Get places
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPlaces()
-    {
-        return $this->places;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $users;
-
 
     /**
      * Add users
@@ -133,13 +118,13 @@ class Company
     }
 
     /**
-     * Remove users
+     * Remove user
      *
-     * @param \AppBundle\Entity\User $users
+     * @param User $user
      */
-    public function removeUser(User $users)
+    public function removeUser(User $user)
     {
-        $this->users->removeElement($users);
+        $this->users->removeElement($user);
     }
 
     /**
@@ -150,5 +135,15 @@ class Company
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Get places
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPlaces()
+    {
+        return $this->places;
     }
 }

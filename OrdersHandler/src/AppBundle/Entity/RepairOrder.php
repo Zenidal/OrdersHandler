@@ -4,57 +4,25 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use AppBundle\Form\RepairOrderType;
+use AppBundle\Form\Type\RepairOrderType;
 
 /**
  * RepairOrder
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="repair_order")
  */
 class RepairOrder
 {
-    private static function getStatusByValue($value)
-    {
-        switch ($value)
-        {
-            case 1:
-                return "Open";
-                break;
-            case 2:
-                return "Assigned";
-                break;
-            case 3:
-                return "In process";
-                break;
-            case 4:
-                return "Resolved";
-                break;
-            case 5:
-                return "Closed";
-                break;
-            case 6:
-                return "Reopened";
-                break;
-            default:
-                return "Unknown status";
-        }
-    }
-
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @var string
+     * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(
      *      message="Description can not be blank."
      * )
@@ -66,25 +34,55 @@ class RepairOrder
     private $description;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=255)
      */
     private $address;
 
     /**
-     * @var integer
+     * @ORM\Column(type="integer")
      */
     private $status;
 
     /**
-     * @var \AppBundle\Entity\User
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
      */
     private $user;
 
     /**
-     * @var \AppBundle\Entity\Company
+     * @var Company
+     *
+     * @ORM\ManyToOne(targetEntity="Company")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
      */
     private $company;
 
+    /**
+     * @var Place
+     *
+     * @ORM\ManyToOne(targetEntity="Place")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="place_id", referencedColumnName="id")
+     * })
+     */
+    private $place;
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Set description
@@ -140,7 +138,11 @@ class RepairOrder
      */
     public function setStatus($status)
     {
-        $this->status = $status;
+        if (in_array($status, array_keys(RepairOrderType::getStatusValues()))) {
+            $this->status = $status;
+        } else {
+            $this->status = 0;
+        }
 
         return $this;
     }
@@ -152,13 +154,13 @@ class RepairOrder
      */
     public function getStatus()
     {
-        return RepairOrder::getStatusByValue($this->status);
+        return $this->status;
     }
 
     /**
      * Set user
      *
-     * @param User $user
+     * @param \AppBundle\Entity\User $user
      * @return RepairOrder
      */
     public function setUser(User $user = null)
@@ -171,7 +173,7 @@ class RepairOrder
     /**
      * Get user
      *
-     * @return User
+     * @return \AppBundle\Entity\User 
      */
     public function getUser()
     {
@@ -181,7 +183,7 @@ class RepairOrder
     /**
      * Set company
      *
-     * @param Company $company
+     * @param \AppBundle\Entity\Company $company
      * @return RepairOrder
      */
     public function setCompany(Company $company = null)
@@ -194,7 +196,7 @@ class RepairOrder
     /**
      * Get company
      *
-     * @return Company
+     * @return \AppBundle\Entity\Company 
      */
     public function getCompany()
     {
@@ -202,18 +204,12 @@ class RepairOrder
     }
 
     /**
-     * @var \AppBundle\Entity\Place
-     */
-    private $place;
-
-
-    /**
      * Set place
      *
      * @param \AppBundle\Entity\Place $place
      * @return RepairOrder
      */
-    public function setPlace(\AppBundle\Entity\place $place = null)
+    public function setPlace(Place $place = null)
     {
         $this->place = $place;
 
@@ -223,7 +219,7 @@ class RepairOrder
     /**
      * Get place
      *
-     * @return \AppBundle\Entity\Place
+     * @return \AppBundle\Entity\Place 
      */
     public function getPlace()
     {

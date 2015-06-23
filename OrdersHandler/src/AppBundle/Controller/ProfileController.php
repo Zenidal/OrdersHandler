@@ -10,9 +10,8 @@ class ProfileController extends Controller
 {
     public function indexAction(Request $request)
     {
-        $session = $request->getSession();
-        return $this->render('security/profile.html.twig',
-            array(
-            ));
+        return $this->render('security/profile.html.twig', [
+            'user' => $this->getUser()
+        ]);
     }
 }

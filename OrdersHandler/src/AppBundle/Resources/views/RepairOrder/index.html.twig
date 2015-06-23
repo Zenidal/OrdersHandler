@@ -19,18 +19,17 @@
                 </thead>
                 <tbody>
                 {% for entity in entities %}
-
                     <tr>
                         <td>
                             <a class="btn btn-link" href="/repair_orders/{{entity.id}}">Show</a>
                         </td>
                         <td>{{ entity.id }}</td>
-                        <td>{{ entity.getUser().username }}</td>
-                        <td>{{ entity.getCompany().name }}</td>
-                        <td>{{ entity.getPlace().name }}</td>
-                        <td>{{ entity.description }}</td>
-                        <td>{{ entity.address }}</td>
-                        <td>{{ entity.status }}</td>
+                        <td>{{ entity.getUser() ? entity.getUser().getUsername() : '' }}</td>
+                        <td>{{ entity.getCompany() ? entity.getCompany().getFirstName() : '' }}</td>
+                        <td>{{ entity.getPlace() ? entity.getPlace().getName() : '' }}</td>
+                        <td>{{ entity.getDescription() }}</td>
+                        <td>{{ entity.getAddress() }}</td>
+                        <td>{{ entity.getStatus() }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

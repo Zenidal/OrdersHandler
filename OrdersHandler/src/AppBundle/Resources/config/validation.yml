@@ -7,7 +7,7 @@ AppBundle\Entity\RepairOrder:
 
 AppBundle\Entity\User:
     properties:
-        name:
+        firstName:
             - NotBlank:
                 message: 'Name should not be blank'
                 groups: [user]

@@ -4,9 +4,13 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\RoleInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Role
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="role")
  */
 class Role implements RoleInterface
 {
@@ -15,14 +19,16 @@ class Role implements RoleInterface
     const ROLE_ENGINEER = 'Engineer';
 
     /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $name;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -34,7 +40,7 @@ class Role implements RoleInterface
      */
     public function __construct()
     {
-        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -107,7 +113,7 @@ class Role implements RoleInterface
     }
 
     /**
-     * Реализация метода, требуемого интерфейсом RoleInterface.
+     * by RoleInterface.
      *
      * @return string The role.
      */

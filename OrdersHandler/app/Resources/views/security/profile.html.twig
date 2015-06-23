@@ -2,7 +2,11 @@
 {% block body %}
     <div class="profile">
         <div class="container-fluid">
-            <legend><h1>Profile</h1></legend>
+            <h1>Profile</h1>
+            <hr />
+            <b>First Name:</b> {{ user ? user.getFirstName() : '' }}<br/>
+            <b>Last Name:</b> {{ user ? user.getSurname() : '' }}
+            <hr />
             <a class="btn btn-lg btn-default" href="/logout">
                 Log out
             </a>

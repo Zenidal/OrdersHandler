@@ -3,16 +3,12 @@ app:
     type:     annotation
 
 default:
-    path:     /home
+    pattern:     /home
     defaults: { _controller: AppBundle:Default:index }
 
 account_register:
-    path:     /register
+    pattern:     /register
     defaults: { _controller: AppBundle:Account:register }
-
-account_create:
-    path:     /register/create
-    defaults: { _controller: AppBundle:Account:create }
 
 login:
     pattern:   /login
@@ -20,37 +16,39 @@ login:
 
 login_check:
     pattern:   /login_check
+    defaults:  { _controller: AppBundle:Security:loginCheck }
 
 repair_orders:
-    path:     /repair_orders
+    pattern:     /repair_orders
     defaults: { _controller: AppBundle:RepairOrder:index }
 
 repairorder_new:
-    path:     /repair_orders/new
+    pattern:     /repair_orders/new
     defaults: { _controller: AppBundle:RepairOrder:new }
 
 repairorder_create:
-    path:     /repair_orders/create
+    pattern:     /repair_orders/create
     defaults: { _controller: AppBundle:RepairOrder:create }
 
 repairorder_delete:
-    path:     /repair_orders/{id}/delete
+    pattern:     /repair_orders/{id}/delete
     defaults: { _controller: AppBundle:RepairOrder:delete }
 
 repairorder_remove:
-    path:     /repair_orders/{id}/remove
+    pattern:     /repair_orders/{id}/remove
     defaults: { _controller: AppBundle:RepairOrder:remove }
 
 repairorder_edit:
-    path:     /repair_orders/{id}/edit
+    pattern:     /repair_orders/{id}/edit
     defaults: { _controller: AppBundle:RepairOrder:edit }
 
 repairorder_show:
-    path:     /repair_orders/{id}
+    pattern:     /repair_orders/{id}
     defaults: { _controller: AppBundle:RepairOrder:show }
 
 profile:
-    path:     /profile
+    pattern:     /profile
     defaults: { _controller: AppBundle:Profile:index }
+
 logout:
-    path:     /logout
+    pattern:     /logout

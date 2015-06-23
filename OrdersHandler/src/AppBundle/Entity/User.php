@@ -6,10 +6,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * User
- * @ORM\Entity
+ *
+ * @ORM\Table(name="user")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity(
  *      "username",
  *      message="Username is already exists."
@@ -17,106 +20,96 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class User implements UserInterface, \Serializable
 {
+
     /**
-     * @var string $username
-     * @Assert\NotBlank(
-     *      message="Username can not be blank."
-     * )
-     * @Assert\Length(
-     *      min = 6,
-     *      max = 50,
-     *      minMessage = "Username must be between 6 and 50 characters.",
-     *      maxMessage = "Username must be between 6 and 50 characters."
-     * )
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=100, unique=true)
      */
     private $username;
 
     /**
-     * @var string
-     * @Assert\NotBlank(
-     *      message="Password can not be blank."
-     * )
-     * @Assert\Length(
-     *      min = 6,
-     *      max = 50,
-     *      minMessage = "Password must be between 6 and 50 characters.",
-     *      maxMessage = "Password must be between 6 and 50 characters."
-     * )
+     * @ORM\Column(type="string", length=64)
      */
     private $password;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $salt;
 
     /**
+     * @ORM\Column(type="string", length=100)
      * @var string
      * @Assert\NotBlank(
      *      message="First name can not be blank."
      * )
      * @Assert\Length(
-     *      min = 6,
+     *      min = 2,
      *      max = 50,
-     *      minMessage = "First name must be between 6 and 50 characters.",
-     *      maxMessage = "First name must be between 6 and 50 characters."
+     *      minMessage = "First name must be between 2 and 50 characters.",
+     *      maxMessage = "First name must be between 2 and 50 characters."
      * )
      */
-    private $name;
+    private $firstName;
 
     /**
+     * @ORM\Column(type="string", length=100)
      * @var string
      * @Assert\Length(
-     *      min = 6,
+     *      min = 2,
      *      max = 50,
-     *      minMessage = "Surname must be between 6 and 50 characters.",
-     *      maxMessage = "Surname must be between 6 and 50 characters."
+     *      minMessage = "Surname must be between 2 and 50 characters.",
+     *      maxMessage = "Surname must be between 2 and 50 characters."
      * )
      */
     private $surname;
 
     /**
-     * @var string
-     * @Assert\NotBlank(
-     *      message="E-mail can not be blank."
-     * )
-     * @Assert\Email(
-     *     message = "The email '{{ value }}' is not a valid email."
-     * )
-     * @Assert\Length(
-     *      min = 6,
-     *      max = 50,
-     *      minMessage = "E-mail must be between 6 and 50 characters.",
-     *      maxMessage = "E-mail must be between 6 and 50 characters."
-     * )
+     * @ORM\Column(type="string", length=60, unique=true)
      */
     private $email;
 
     /**
-     * @var integer
+     * @var repairOrder[]
+     *
+     * @ORM\OneToMany(targetEntity="RepairOrder", mappedBy="user", cascade={"remove"})
      */
-    private $id;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $repair_orders;
+    private $repairOrders;
     
     /**
      * @var \AppBundle\Entity\Role
      */
     private $role;
+
     /**
-     * @var boolean
+     * @ORM\Column(name="is_active", type="boolean")
      */
     private $isActive = true;
+
+    /**
+     * @var Company
+     *
+     * @ORM\ManyToOne(targetEntity="Company")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->repair_orders = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->repairOrders = new ArrayCollection();
+        $this->isActive = true;
+        $this->salt = md5(uniqid(null, true));
     }
 
     /**
@@ -212,26 +205,26 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * Set name
+     * Set firstName
      *
      * @param string $name
      * @return User
      */
-    public function setName($name)
+    public function setFirstName($name)
     {
-        $this->name = $name;
+        $this->firstName = $name;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get firstName
      *
      * @return string 
      */
-    public function getName()
+    public function getFirstName()
     {
-        return $this->name;
+        return $this->firstName;
     }
 
     /**
@@ -298,7 +291,7 @@ class User implements UserInterface, \Serializable
      */
     public function addRepairOrder(RepairOrder $repairOrders)
     {
-        $this->repair_orders[] = $repairOrders;
+        $this->repairOrders[] = $repairOrders;
 
         return $this;
     }
@@ -310,7 +303,7 @@ class User implements UserInterface, \Serializable
      */
     public function removeRepairOrder(RepairOrder $repairOrders)
     {
-        $this->repair_orders->removeElement($repairOrders);
+        $this->repairOrders->removeElement($repairOrders);
     }
 
     /**
@@ -320,7 +313,7 @@ class User implements UserInterface, \Serializable
      */
     public function getRepairOrders()
     {
-        return $this->repair_orders;
+        return $this->repairOrders;
     }
 
     /**
@@ -376,5 +369,28 @@ class User implements UserInterface, \Serializable
             // see section on salt below
             // $this->salt
             ) = unserialize($serialized);
+    }
+
+    /**
+     * Set company
+     *
+     * @param \AppBundle\Entity\Company $company
+     * @return User
+     */
+    public function setCompany(Company $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \AppBundle\Entity\Company 
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

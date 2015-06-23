@@ -34,6 +34,16 @@ class RepairOrderType extends AbstractType
     }
 
     /**
+     * @param integer $value
+     * @return string
+     */
+    public static function getStatusByValue($value)
+    {
+        $statuses = self::getStatusValues();
+        return isset($statuses[$value]) ? $statuses[$value] : '';
+    }
+
+    /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
