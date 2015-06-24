@@ -2,6 +2,8 @@
 
 namespace AppBundle\Form\Type;
 
+use AppBundle\Entity\RepairOrder;
+use AppBundle\Form\Type\CompanyType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -53,14 +55,13 @@ class RepairOrderType extends AbstractType
             ->add('description')
             ->add('address')
             ->add('submit', 'submit')
-            ->add('company', 'entity', array(
-                'class' => 'AppBundle:Company',
-                'property' => 'name',
-            ))
-            ->add('place', 'entity', array(
+            ->add('place', 'entity', [
                 'class' => 'AppBundle:Place',
                 'property' => 'name',
-            ));
+            ])
+            ->add('company', 'collection', [
+                'type' => new CompanyType(),
+            ]);
     }
 
     /**
@@ -72,7 +73,7 @@ class RepairOrderType extends AbstractType
             'data_class' => 'AppBundle\Entity\RepairOrder',
             'csrf_protection' => false,
             'cascade_validation' => true,
-            'validation_groups' => ['repairOrder'],
+            'validation_groups' => ['repairOrder']
         ]);
     }
 

@@ -52,10 +52,9 @@ class RepairOrderController extends Controller
     public function newAction()
     {
         $repairOrder = new RepairOrder();
+        $repairOrder->setUser($this->getUser());
         $form = $this->createForm(new RepairOrderType(), $repairOrder, array(
-            'action' => $this->generateUrl('repairorder_create'),
-        ));
-
+            'action' => $this->generateUrl('repairorder_create')));
         return $this->render(
             'AppBundle:RepairOrder:new.html.twig',
             array(
