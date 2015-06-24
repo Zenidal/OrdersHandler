@@ -11,6 +11,10 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('username', 'text');
+        $builder->add('companies', 'entity', array(
+            'class' => 'AppBundle:Company',
+            'property' => 'name',
+            'multiple' => true));
         $builder->add('firstName', 'text');
         $builder->add('surname', 'text');
         $builder->add('email', 'email');

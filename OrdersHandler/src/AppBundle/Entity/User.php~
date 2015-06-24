@@ -108,7 +108,6 @@ class User implements UserInterface, \Serializable
      */
     public function __construct()
     {
-        $this->companies = new ArrayCollection();
         $this->repairOrders = new ArrayCollection();
         $this->isActive = true;
         $this->salt = md5(uniqid(null, true));
@@ -374,7 +373,7 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * Add companies
+     * Add company
      *
      * @param \AppBundle\Entity\Company $companies
      * @return User
@@ -397,7 +396,7 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * Get companies
+     * Get company
      *
      * @return \Doctrine\Common\Collections\Collection
      */
