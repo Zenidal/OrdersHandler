@@ -10,14 +10,11 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Role
  *
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RoleRepository")
  * @ORM\Table(name="role")
  */
 class Role implements RoleInterface
 {
-    const ROLE_CUSTOMER = 'Customer';
-    const ROLE_MANAGER = 'Manager';
-    const ROLE_ENGINEER = 'Engineer';
-
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -28,7 +25,7 @@ class Role implements RoleInterface
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $name;
+    private $name = 'Customer';
 
     /**
      * @var User[]
