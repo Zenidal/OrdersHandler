@@ -83,8 +83,13 @@ class User implements UserInterface, \Serializable
     private $repairOrders;
     
     /**
-     * @var \AppBundle\Entity\Role
-     */
+    * @var Role
+    *
+    * @ORM\ManyToOne(targetEntity="Role")
+    * @ORM\JoinColumns({
+    *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+    * })
+    */
     private $role;
 
     /**
@@ -95,11 +100,7 @@ class User implements UserInterface, \Serializable
     /**
      * @var Company[]
      *
-     * @ORM\ManyToMany(targetEntity="Company", cascade={"persist"})
-     * @ORM\JoinTable(name="users_companies",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="company_id", referencedColumnName="id")}
-     *      )
+     * @ORM\ManyToMany(targetEntity="Company", mappedBy="users", cascade={"persist"})
      */
     private $companies;
 

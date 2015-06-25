@@ -4,6 +4,8 @@ parameters:
 #    parameter_name: value
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    security.access.repairorder_voter:
+        class:      AppBundle\Security\Authorization\Voter\RepairOrderVoter
+        public:     false
+        tags:
+           - { name: security.voter }

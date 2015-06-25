@@ -31,7 +31,9 @@ class Role implements RoleInterface
     private $name;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var User[]
+     *
+     * @ORM\OneToMany(targetEntity="User", mappedBy="user", cascade={"remove"})
      */
     private $users;
 
