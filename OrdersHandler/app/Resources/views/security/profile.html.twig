@@ -5,6 +5,7 @@
             <h1>Profile</h1>
             <hr />
             <b>Role:</b> {{ user ? user.getRoleName() : '' }}<br/>
+            <b>Username:</b> {{ user ? user.getUsername() : '' }}<br/>
             <b>First Name:</b> {{ user ? user.getFirstName() : '' }}<br/>
             <b>Last Name:</b> {{ user ? user.getSurname() : '' }}
             <hr />

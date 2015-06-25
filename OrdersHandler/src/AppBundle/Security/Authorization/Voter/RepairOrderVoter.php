@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Security\Authorization\Voter;
 
+use AppBundle\Form\Type\RepairOrderType;
 use AppBundle\Form\Type\RoleType;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -73,7 +74,11 @@ class RepairOrderVoter implements VoterInterface
             case self::EDIT:
                 // we assume that our data object has a method getOwner() to
                 // get the current owner user entity for this data object
-                if ($user->getRoleName() === RoleType::ROLE_MANAGER) {
+                if ($user->getRoleName() === RoleType::ROLE_MANAGER ||
+                    (
+                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN
+                    )
+                ) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;

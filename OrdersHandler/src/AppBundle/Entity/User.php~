@@ -9,6 +9,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 /**
  * User
@@ -73,7 +75,7 @@ class User implements UserInterface, \Serializable
     private $surname;
 
     /**
-     * @ORM\Column(type="string", length=60, unique=true)
+     * @ORM\Column(type="string", length=60)
      */
     private $email;
 
