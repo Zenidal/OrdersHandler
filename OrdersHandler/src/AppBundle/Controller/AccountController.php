@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Form\Type\RegistrationType;
 use AppBundle\Form\Model\Registration;
 use AppBundle\Entity\User;
+use AppBundle\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
@@ -36,6 +37,8 @@ class AccountController extends Controller
 
                 $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
                 $user->setPassword($password);
+
+                $user->setRole($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role')->findRoleByName('Customer'));
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($user);

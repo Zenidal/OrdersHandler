@@ -82,6 +82,9 @@ class RepairOrderType extends AbstractType
             ->add('place', 'entity', [
                 'class' => 'AppBundle:Place',
                 'property' => 'name',
+            ])
+            ->add('company', 'collection', [
+                'type' => new CompanyType(),
             ]);
     }
 

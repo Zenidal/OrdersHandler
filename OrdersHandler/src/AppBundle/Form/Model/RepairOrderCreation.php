@@ -13,8 +13,6 @@ class RepairOrderCreation
      */
     protected $repairOrder;
 
-
-
     public function setRepairOrder(RepairOrder $repairOrder)
     {
         $this->repairOrder = $repairOrder;

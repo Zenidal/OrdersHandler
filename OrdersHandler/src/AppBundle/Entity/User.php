@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\RoleRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -340,6 +342,11 @@ class User implements UserInterface, \Serializable
     public function getRole()
     {
         return $this->role;
+    }
+
+    public function getRoleName()
+    {
+        return $this->getRole()->getName();
     }
 
     public function getRoles()

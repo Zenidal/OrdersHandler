@@ -4,6 +4,13 @@
     <div class="home">
         <div class="container-fluid">
             <div class="home">
+                <div class="home-error">
+                    {% for error in errorMessages %}
+                        <div class="error text-danger">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
                 <legend><h1>Homepage</h1></legend>
             </div>
         </div>

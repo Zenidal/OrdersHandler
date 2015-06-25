@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\RepairOrder;
 use AppBundle\Form\Type\RepairOrderType;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class RepairOrderController extends Controller
 {
@@ -56,6 +57,8 @@ class RepairOrderController extends Controller
             'action' => $this->generateUrl('repairorder_create'),
         ));
 
+        $this->denyAccessUnlessGranted('view', $repairOrder, 'Unauthorized access!');
+        
         return $this->render(
             'AppBundle:RepairOrder:new.html.twig',
             array(
@@ -75,6 +78,7 @@ class RepairOrderController extends Controller
             throw $this->createNotFoundException('Unable to find RepairOrder entity.');
         }
 
+        $this->denyAccessUnlessGranted('view', $entity, 'Unauthorized access!');
         return $this->render('AppBundle:RepairOrder:show.html.twig', array(
                 'entity' => $entity
             )
@@ -92,6 +96,17 @@ class RepairOrderController extends Controller
         }
 
         $editForm = $this->createEditForm($entity);
+
+        try {
+            $this->denyAccessUnlessGranted('edit', $entity, 'Access denied to edit orders!');
+        } catch (AccessDeniedException $ex) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        $ex->getMessage()
+                    ]
+                )
+            );
+        }
 
         return $this->render('AppBundle:RepairOrder:edit.html.twig', array(
                 'entity' => $entity,
@@ -164,6 +179,16 @@ class RepairOrderController extends Controller
         $deleteForm = $this->createDeleteForm($id);
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AppBundle:RepairOrder')->find($id);
+        try {
+            $this->denyAccessUnlessGranted('edit', $entity, 'Access denied to edit orders!');
+        } catch (AccessDeniedException $ex) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        $ex->getMessage()
+                    ]
+                )
+            );
+        }
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find RepairOrder entity.');
         }
