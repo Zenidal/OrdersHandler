@@ -29,7 +29,7 @@ class RepairOrderController extends Controller
         $entity->setStatus(RepairOrderType::STATUS_OPEN);
         $entity->setUser($user);
 
-        $form = $this->createForm(new RepairOrderType(), $entity, array(
+        $form = $this->createForm($this->get('form.order.type'), $entity, array(
             'action' => $this->generateUrl('repairorder_create'),
         ));
         $form->handleRequest($request);
@@ -52,9 +52,10 @@ class RepairOrderController extends Controller
     public function newAction()
     {
         $repairOrder = new RepairOrder();
-        $repairOrder->setUser($this->getUser());
-        $form = $this->createForm(new RepairOrderType(), $repairOrder, array(
-            'action' => $this->generateUrl('repairorder_create')));
+        $form = $this->createForm($this->get('form.order.type'), $repairOrder, array(
+            'action' => $this->generateUrl('repairorder_create'),
+        ));
+
         return $this->render(
             'AppBundle:RepairOrder:new.html.twig',
             array(
@@ -101,7 +102,7 @@ class RepairOrderController extends Controller
 
     private function createEditForm(RepairOrder $entity)
     {
-        $form = $this->createForm(new RepairOrderType(), $entity, array(
+        $form = $this->createForm($this->get('form.order.type'), $entity, array(
             'action' => $this->generateUrl('repairorder_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));

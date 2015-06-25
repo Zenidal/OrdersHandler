@@ -9,3 +9,9 @@ services:
         public:     false
         tags:
            - { name: security.voter }
+
+    form.order.type:
+        class: AppBundle\Form\Type\RepairOrderType
+        arguments: [@security.token_storage]
+        tags:
+            - { name: form.type, alias: order_type }
