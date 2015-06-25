@@ -26,10 +26,6 @@ repairorder_new:
     pattern:     /repair_orders/new
     defaults: { _controller: AppBundle:RepairOrder:new }
 
-repairorder_create:
-    pattern:     /repair_orders/create
-    defaults: { _controller: AppBundle:RepairOrder:create }
-
 repairorder_delete:
     pattern:     /repair_orders/{id}/delete
     defaults: { _controller: AppBundle:RepairOrder:delete }
@@ -45,10 +41,6 @@ repairorder_edit:
 repairorder_show:
     pattern:     /repair_orders/{id}
     defaults: { _controller: AppBundle:RepairOrder:show }
-
-repairorder_update:
-    path:     /repair_orders/{id}/update
-    defaults: { _controller: AppBundle:RepairOrder:update }
 
 profile:
     pattern:     /profile

@@ -45,8 +45,6 @@ class Company
     /**
      * @var User[]
      *
-     * @ORM\ManyToMany(targetEntity="User", cascade={"persist"} )
-     *
      * @ORM\JoinTable(name="users_companies",
      *      joinColumns={@ORM\JoinColumn(name="company_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}

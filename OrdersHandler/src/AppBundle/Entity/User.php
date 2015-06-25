@@ -9,6 +9,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 /**
  * User
@@ -102,7 +104,11 @@ class User implements UserInterface, \Serializable
     /**
      * @var Company[]
      *
-     * @ORM\ManyToMany(targetEntity="Company", mappedBy="users", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="Company")
+     * @ORM\JoinTable(name="users_companies",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="company_id", referencedColumnName="id")}
+     *      )
      */
     private $companies;
 

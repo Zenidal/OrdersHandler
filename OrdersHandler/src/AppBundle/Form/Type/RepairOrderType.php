@@ -61,9 +61,13 @@ class RepairOrderType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        /** @var User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
+        $entity = $builder->getData();
+        if (!is_null($entity->getId())) {
+            $user = $entity->getUser();
+        } else {
+            /** @var User $user */
+            $user = $this->tokenStorage->getToken()->getUser();
+        }
 
         $builder
             ->add('description')
@@ -82,9 +86,6 @@ class RepairOrderType extends AbstractType
             ->add('place', 'entity', [
                 'class' => 'AppBundle:Place',
                 'property' => 'name',
-            ])
-            ->add('company', 'collection', [
-                'type' => new CompanyType(),
             ]);
     }
 

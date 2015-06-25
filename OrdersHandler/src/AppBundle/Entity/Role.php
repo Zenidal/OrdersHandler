@@ -50,9 +50,6 @@ class Role implements RoleInterface
      */
     public function setName($name)
     {
-        if (!in_array($name, array(self::ROLE_CUSTOMER, self::ROLE_MANAGER, self::ROLE_ENGINEER))) {
-            throw new \InvalidArgumentException("Invalid role name");
-        }
         $this->name = $name;
 
         return $this;
