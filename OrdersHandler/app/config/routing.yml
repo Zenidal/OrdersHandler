@@ -46,6 +46,10 @@ profile:
     pattern:     /profile
     defaults: { _controller: AppBundle:Profile:index }
 
+getPlacesByCompanyName:
+    pattern:     /getPlacesByCompanyName
+    defaults: { _controller: AppBundle:Place:getPlacesByCompanyName }
+
 manager:
     pattern:   /manager
     defaults:  { _controller: AppBundle:Manager:index }
