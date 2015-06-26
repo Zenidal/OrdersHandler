@@ -9,6 +9,12 @@
             <b>First Name:</b> {{ user ? user.getFirstName() : '' }}<br/>
             <b>Last Name:</b> {{ user ? user.getSurname() : '' }}
             <hr />
+            {% if isManager %}
+                <a class="btn btn-lg btn-default" href="/manager">
+                    Manager page
+                </a>
+            {% endif %}
+            <hr />
             <a class="btn btn-lg btn-default" href="/logout">
                 Log out
             </a>

@@ -46,5 +46,9 @@ profile:
     pattern:     /profile
     defaults: { _controller: AppBundle:Profile:index }
 
+manager:
+    pattern:   /manager
+    defaults:  { _controller: AppBundle:Manager:index }
+
 logout:
     pattern:     /logout

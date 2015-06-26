@@ -1,43 +1,37 @@
 <?php
 namespace AppBundle\Security\Authorization\Voter;
 
-use AppBundle\Form\Type\RepairOrderType;
-use AppBundle\Form\Type\RoleType;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class RepairOrderVoter implements VoterInterface
+class ManagerVoter implements VoterInterface
 {
     const VIEW = 'view';
     const EDIT = 'edit';
-    const CREATE = 'create';
-    const DELETE = 'delete';
 
     public function supportsAttribute($attribute)
     {
         return in_array($attribute, array(
             self::VIEW,
             self::EDIT,
-            self::CREATE,
-            self::DELETE
         ));
     }
 
     public function supportsClass($class)
     {
-        $supportedClass = 'AppBundle\Entity\RepairOrder';
+        $supportedClass = 'AppBundle\Entity\Role';
 
         return $supportedClass === $class || is_subclass_of($class, $supportedClass);
     }
 
     /**
-     * @var \AppBundle\Entity\RepairOrder $repairOrder
+     * @var \AppBundle\Entity\Role $role
      */
-    public function vote(TokenInterface $token, $repairOrder, array $attributes)
+    public function vote(TokenInterface $token, $role, array $attributes)
     {
         // check if class of this object is supported by this voter
-        if (!$this->supportsClass(get_class($repairOrder))) {
+        if (!$this->supportsClass(get_class($role))) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
@@ -68,40 +62,14 @@ class RepairOrderVoter implements VoterInterface
 
         switch ($attribute) {
             case self::VIEW:
-                // the data object could have for example a method isPrivate()
-                // which checks the boolean attribute $private
                 if ($user->getRoleName() === RoleType::ROLE_MANAGER) {
-                    return VoterInterface::ACCESS_GRANTED;
-                }
-                if ($repairOrder->getUser() === $user) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
 
             case self::EDIT:
-                // we assume that our data object has a method getOwner() to
-                // get the current owner user entity for this data object
-                if ($user->getRoleName() === RoleType::ROLE_MANAGER ||
-                    (
-                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN
-                    )
-                ) {
-                    return VoterInterface::ACCESS_GRANTED;
-                }
+                return VoterInterface::ACCESS_GRANTED;
                 break;
-            case self::CREATE:
-                if (in_array($user->getRoleName(), RoleType::getRoleValues())){
-                    return VoterInterface::ACCESS_GRANTED;
-                }
-                break;
-            case self::DELETE:
-                if ($user->getRoleName() === RoleType::ROLE_MANAGER ||
-                    (
-                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN
-                    )
-                ) {
-                    return VoterInterface::ACCESS_GRANTED;
-                }
         }
 
         return VoterInterface::ACCESS_DENIED;

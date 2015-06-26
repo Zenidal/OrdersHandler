@@ -10,6 +10,12 @@ services:
         tags:
            - { name: security.voter }
 
+    security.access.manager_voter:
+            class:      AppBundle\Security\Authorization\Voter\ManagerVoter
+            public:     false
+            tags:
+               - { name: manager.voter }
+
     form.order.type:
         class: AppBundle\Form\Type\RepairOrderType
         arguments: [@security.token_storage]
