@@ -1,4 +1,16 @@
 $(function () {
+    $('#repairOrder_company').ready(
+        function () {
+            $("#repairOrder_company option:first").attr("selected", "selected");
+            $.get(
+                "/getPlacesByCompanyName",
+                {
+                    name: $('#repairOrder_company option:selected').text()
+                },
+                onAjaxSuccess);
+        }
+    )
+
     $('#repairOrder_company').change(
         function () {
             $.get(
