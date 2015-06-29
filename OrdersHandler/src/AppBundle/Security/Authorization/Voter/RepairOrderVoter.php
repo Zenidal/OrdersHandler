@@ -70,7 +70,7 @@ class RepairOrderVoter implements VoterInterface
             case self::VIEW:
                 // the data object could have for example a method isPrivate()
                 // which checks the boolean attribute $private
-                if ($user->getRoleName() === RoleType::ROLE_MANAGER) {
+                if ($user->getRole()->getName() === RoleType::ROLE_MANAGER) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 if ($repairOrder->getUser() === $user) {
@@ -81,7 +81,7 @@ class RepairOrderVoter implements VoterInterface
             case self::EDIT:
                 // we assume that our data object has a method getOwner() to
                 // get the current owner user entity for this data object
-                if ($user->getRoleName() === RoleType::ROLE_MANAGER ||
+                if ($user->getRole()->getName() === RoleType::ROLE_MANAGER ||
                     (
                         $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN
                     )
@@ -90,12 +90,12 @@ class RepairOrderVoter implements VoterInterface
                 }
                 break;
             case self::CREATE:
-                if (in_array($user->getRoleName(), RoleType::getRoleValues())){
+                if (in_array($user->getRole()->getName(), RoleType::getRoleValues())){
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
             case self::DELETE:
-                if ($user->getRoleName() === RoleType::ROLE_MANAGER ||
+                if ($user->getRole()->getName() === RoleType::ROLE_MANAGER ||
                     (
                         $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN
                     )

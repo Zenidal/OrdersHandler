@@ -13,8 +13,6 @@ class Registration
      */
     protected $user;
 
-
-
     public function setUser(User $user)
     {
         $this->user = $user;

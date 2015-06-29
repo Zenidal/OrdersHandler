@@ -2,4 +2,15 @@ AppBundle\Entity\RepairOrder:
     properties:
         address:
         - NotBlank: { groups: [default] }
-        - Length: { min: 7, groups: [default] }
+        - Length: { min: 7, max: 255, minMessage: 'An address value should be in the range of 7 to 255 characters.', maxMessage: 'An address value should be in the range of 7 to 255 characters.', groups: [default] }
+        description:
+        - NotBlank: { groups: [default] }
+        - Length: { min: 7, max: 255, minMessage: 'A description value should be in the range of 7 to 255 characters.', maxMessage: 'A description value should be in the range of 7 to 255 characters.', groups: [default] }
+AppBundle\Entity\User:
+    properties:
+        username:
+        - NotBlank: { groups: [default] }
+        - Length: { min: 6, max: 100, minMessage: 'An username value should be in the range of 6 to 100 characters.', maxMessage: 'An username value should be in the range of 6 to 100 characters.', groups: [default] }
+        password:
+        - NotBlank: { groups: [default] }
+        - Length: { min: 6, max: 100, minMessage: 'A password value should be in the range of 6 to 100 characters.', maxMessage: 'A password value should be in the range of 6 to 100 characters.', groups: [default] }

@@ -34,7 +34,7 @@ class UserType extends AbstractType
             'data_class' => 'AppBundle\Entity\User',
             'csrf_protection' => false,
             'cascade_validation' => true,
-            'validation_groups' => ['user'],
+            'validation_groups' => ['user']
         ]);
     }
 
