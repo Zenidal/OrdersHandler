@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use AppBundle\Repository\CompanyRepository;
+use AppBundle\Repository\PlaceRepository;
 use AppBundle\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -86,6 +87,12 @@ class RepairOrderType extends AbstractType
             ->add('place', 'entity', [
                 'class' => 'AppBundle:Place',
                 'property' => 'name',
+                'query_builder' => function (PlaceRepository $placeRepository) use ($user) {
+                    $db = $placeRepository->createQueryBuilder('place');
+                    return $db
+                        ->add('where', $db->expr()->in('place', ':places'))
+                        ->setParameter('places', $user->getCompanies()->first()->getPlaces()->toArray());
+                },
             ]);
     }
 
