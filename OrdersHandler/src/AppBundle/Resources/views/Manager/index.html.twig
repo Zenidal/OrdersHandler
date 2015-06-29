@@ -6,6 +6,49 @@
             <legend>
                 Manager page
             </legend>
+            <div class="row">
+                <div class="manage-users col-md-4 col-xs-12">
+                    <div class="thumbnail">
+                        <div class="manager text-center text-uppercase">Manage users</div>
+                        {% if users %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Role</th>
+                                        <th>Username</th>
+                                        <th>First name</th>
+                                        <th>Surname</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                        <tr>
+                                            <td>{{ user.getId()|e }}</td>
+                                            <td>{{ user.getRole().getName()|e }}</td>
+                                            <td>{{ user.getUsername()|e }}</td>
+                                            <td>{{ user.getFirstName()|e }}</td>
+                                            <td>{{ user.getSurname()|e }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <li><em>No user found</em></li>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="manage-companies col-md-4 col-xs-12">
+                    <div class="thumbnail text-center">
+                        <div class="text-center text-uppercase">Manage companies</div>
+                    </div>
+                </div>
+                <div class="manage-places col-md-4 col-xs-12">
+                    <div class="thumbnail text-center">
+                        <div class="text-center text-uppercase">Manage places</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

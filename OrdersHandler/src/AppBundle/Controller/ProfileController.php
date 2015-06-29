@@ -12,8 +12,7 @@ class ProfileController extends Controller
     public function indexAction(Request $request)
     {
         return $this->render('security/profile.html.twig', [
-            'user' => $this->getUser(),
-            'isManager' => $this->getUser()->getRoleName() === RoleType::ROLE_MANAGER ? true : false
+            'user' => $this->getUser()
         ]);
     }
 }
