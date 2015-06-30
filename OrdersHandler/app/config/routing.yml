@@ -66,6 +66,10 @@ manager_users_show:
     pattern:   /manager/users/{id}
     defaults:  { _controller: AppBundle:Manager:usersShowManager }
 
+manager_users_delete:
+    pattern:   /manager/users/{id}/delete
+    defaults:  { _controller: AppBundle:Manager:usersDeleteManager }
+
 manager_companies:
     pattern:   /manager/companies
     defaults:  { _controller: AppBundle:Manager:companiesManager }

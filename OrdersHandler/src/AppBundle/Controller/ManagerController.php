@@ -9,6 +9,7 @@ use AppBundle\Form\Model\Registration;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
@@ -23,7 +24,7 @@ class ManagerController extends Controller
             ]);
         }
         return $this->render('default/index.html.twig', [
-            'errorMessages' => ['Access denied']
+                'errorMessages' => ['Access denied']
             ]
         );
     }
@@ -140,6 +141,78 @@ class ManagerController extends Controller
         return $this->render('AppBundle:User:show.html.twig', array(
                 'user' => $entity
             )
+        );
+    }
+
+    public function usersDeleteManagerAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:User')->find($id);
+
+        if (!$entity) {
+            try {
+                throw $this->createNotFoundException('Unable to find User entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
+        if ($entity->getRole()->getName() === RoleType::ROLE_MANAGER || $entity->getId() === $this->getUser()->getId()) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        'Access denied to delete this user.'
+                    ]
+                )
+            );
+        }
+
+        $deleteForm = $this->createFormBuilder()
+            ->setAction($this->generateUrl('manager_users_delete', array(
+                'id' => $id
+            )))
+            ->setMethod('POST')
+            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            if (!$entity) {
+                try {
+                    throw $this->createNotFoundException('Unable to find User entity.');
+                } catch (NotFoundHttpException $ex) {
+                    return $this->render('default/index.html.twig', array(
+                            'errorMessages' => [
+                                $ex->getMessage()
+                            ]
+                        )
+                    );
+                }
+            }
+
+            $deleteForm->handleRequest($request);
+            if ($deleteForm->isValid()) {
+                $em->remove($entity);
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('manager'));
+            }
+            return $this->render('AppBundle:User:delete.html.twig', [
+                    'deleteForm' => $deleteForm->createView(),
+                    'user' => $entity
+                ]
+            );
+        }
+
+        return $this->render('AppBundle:User:delete.html.twig', [
+                'delete_form' => $deleteForm->createView(),
+                'user' => $entity
+            ]
         );
     }
 

@@ -1,0 +1,19 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="manager-delete-user">
+        <div class="container-fluid">
+            <legend>
+                Deletion user({{ user.username }})
+            </legend>
+            <div class="manager-delete-user-error">
+                {{ form_errors(delete_form) }}
+            </div>
+            <div class="manager-delete-user-form">
+                {{ form_start(delete_form) }}
+                {{ form_widget(delete_form.submit, { 'attr': {'class': 'btn btn-default'} }) }}
+                {{ form_end(delete_form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
