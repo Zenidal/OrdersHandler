@@ -82,5 +82,9 @@ manager_places:
     pattern:   /manager/places
     defaults:  { _controller: AppBundle:Manager:placesManager }
 
+manager_places_create:
+    pattern:   /manager/places/new
+    defaults:  { _controller: AppBundle:Manager:placesCreateManager }
+
 logout:
     pattern:     /logout

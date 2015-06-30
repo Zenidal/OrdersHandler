@@ -11,11 +11,11 @@ class LoadRoleAndUserData implements FixtureInterface
 {
     private $roles = [
         [
-            'name' => 'Customer',
+            'name' => 'ROLE_CUSTOMER',
             'users' => []
         ],
         [
-            'name' => 'Manager',
+            'name' => 'ROLE_MANAGER',
             'users' => [
                 [
                     'username' => 'Admin',
@@ -28,7 +28,7 @@ class LoadRoleAndUserData implements FixtureInterface
             ]
         ],
         [
-            'name' => 'Engineer',
+            'name' => 'ROLE_ENGINEER',
             'users' => []
         ]
     ];

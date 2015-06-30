@@ -1,0 +1,25 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="manager-companies-new">
+        <div class="container-fluid">
+            <legend>Company creation</legend>
+            <div class="manager-users-new-error">
+                {{ form_errors(form) }}
+            </div>
+            <div class="manager-users-new-form">
+                {{ form_start(form) }}
+                <div class="form-group">
+                    <label for="company_name">Company name</label>
+                    {{ form_widget(form.name, { 'attr': {'class': 'form-control', 'placeholder': 'Enter company name'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="company_places">Places</label>
+                    {{ form_widget(form.places, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+                {{ form_widget(form.create, { 'attr': {'class': 'btn btn-default'} }) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -50,27 +50,12 @@ class User implements UserInterface, \Serializable
     /**
      * @ORM\Column(type="string", length=100)
      * @var string
-     * @Assert\NotBlank(
-     *      message="First name can not be blank."
-     * )
-     * @Assert\Length(
-     *      min = 2,
-     *      max = 50,
-     *      minMessage = "First name must be between 2 and 50 characters.",
-     *      maxMessage = "First name must be between 2 and 50 characters."
-     * )
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=100)
      * @var string
-     * @Assert\Length(
-     *      min = 2,
-     *      max = 50,
-     *      minMessage = "Surname must be between 2 and 50 characters.",
-     *      maxMessage = "Surname must be between 2 and 50 characters."
-     * )
      */
     private $surname;
 
@@ -85,7 +70,7 @@ class User implements UserInterface, \Serializable
      * @ORM\OneToMany(targetEntity="RepairOrder", mappedBy="user", cascade={"remove"})
      */
     private $repairOrders;
-    
+
     /**
     * @var Role
     *
@@ -139,7 +124,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get username
      *
-     * @return string 
+     * @return string
      */
     public function getUsername()
     {
@@ -162,7 +147,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -185,7 +170,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -208,7 +193,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get salt
      *
-     * @return string 
+     * @return string
      */
     public function getSalt()
     {
@@ -231,7 +216,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get firstName
      *
-     * @return string 
+     * @return string
      */
     public function getFirstName()
     {
@@ -254,7 +239,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get surname
      *
-     * @return string 
+     * @return string
      */
     public function getSurname()
     {
@@ -277,7 +262,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -287,7 +272,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -320,7 +305,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get repair_orders
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRepairOrders()
     {
@@ -357,7 +342,7 @@ class User implements UserInterface, \Serializable
 
     public function getRoles()
     {
-        return array('ROLE_USER');
+        return [$this->role];
     }
 
     public function eraseCredentials()

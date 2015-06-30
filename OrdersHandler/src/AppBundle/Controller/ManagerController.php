@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Place;
+use AppBundle\Form\Type\PlaceType;
 use AppBundle\Form\Type\RoleType;
 use AppBundle\Form\Type\UserAlterationType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -270,6 +272,39 @@ class ManagerController extends Controller
         return $this->render('AppBundle:User:edit.html.twig', array(
                 'user' => $entity,
                 'edit_form' => $editForm->createView()
+            )
+        );
+    }
+
+    public function placesCreateManagerAction(Request $request)
+    {
+        $form = $this->createForm(new PlaceType(), new Place(), array(
+            'action' => $this->generateUrl('manager_places_create'),
+        ));
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $place = $form->getData();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($place);
+                $em->flush();
+
+                return $this->redirectToRoute('manager');
+            } else {
+                return $this->render(
+                    'AppBundle:Place:new.html.twig', array(
+                        'form' => $form->createView(),
+                        'errors' => $errors = $this->get('validator')->validate($form)
+                    )
+                );
+            }
+        }
+
+        return $this->render(
+            'AppBundle:Place:new.html.twig', array(
+                'form' => $form->createView(),
+                'errors' => null
             )
         );
     }
