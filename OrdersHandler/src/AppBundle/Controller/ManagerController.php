@@ -117,4 +117,34 @@ class ManagerController extends Controller
             )
         );
     }
+
+    public function usersShowManagerAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:User')->find($id);
+
+        if (!$entity) {
+            try {
+                throw $this->createNotFoundException('Unable to find User entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+        return $this->render('AppBundle:User:show.html.twig', array(
+                'user' => $entity
+            )
+        );
+    }
+
+    public function usersEditManagerAction(Request $request)
+    {
+
+    }
 }

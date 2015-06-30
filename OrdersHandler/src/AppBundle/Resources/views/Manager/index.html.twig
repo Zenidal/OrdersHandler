@@ -43,7 +43,7 @@
                         </thead>
                         <tbody>
                         {% for user in users %}
-                            <tr>
+                            <tr onclick="userShow({{ user.getId() }})">
                                 <td>{{ user.getId()|e }}</td>
                                 <td>{{ user.getUsername()|e }}</td>
                                 <td>{{ user.getRole().getName()|e }}</td>

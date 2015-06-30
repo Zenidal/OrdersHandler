@@ -4,10 +4,9 @@
     <div class="repair_orders">
         <div class="container-fluid">
             <legend><a class="glyphicon glyphicon-plus" href="{{ path('repairorder_new') }}"></a> Repair orders</legend>
-            <table class="records_list table table-hover">
+            <table class="records_list table table-hover table-striped">
                 <thead>
                 <tr>
-                    <th></th>
                     <th>Id</th>
                     <th>User</th>
                     <th>Company</th>
@@ -19,10 +18,7 @@
                 </thead>
                 <tbody>
                 {% for entity in entities %}
-                    <tr>
-                        <td>
-                            <a class="btn btn-link" href="/repair_orders/{{entity.id}}">Show</a>
-                        </td>
+                    <tr onclick="repairOrderShow({{ entity.id }})">
                         <td>{{ entity.id }}</td>
                         <td>{{ entity.getUser() ? entity.getUser().getUsername() : '' }}</td>
                         <td>{{ entity.getCompany() ? entity.getCompany().getName() : '' }}</td>

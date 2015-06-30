@@ -62,6 +62,10 @@ manager_users_create:
     pattern:   /manager/users/new
     defaults:  { _controller: AppBundle:Manager:usersCreateManager }
 
+manager_users_show:
+    pattern:   /manager/users/{id}
+    defaults:  { _controller: AppBundle:Manager:usersShowManager }
+
 manager_companies:
     pattern:   /manager/companies
     defaults:  { _controller: AppBundle:Manager:companiesManager }

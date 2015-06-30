@@ -18,3 +18,11 @@ $(function () {
         }
     }
 });
+
+function userShow(id){
+    window.location.href = '/manager/users/' + id;
+}
+
+function repairOrderShow(id){
+    window.location.href = '/repair_orders/' +id;
+}
