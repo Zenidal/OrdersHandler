@@ -1,5 +1,4 @@
 <?php
-
 namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -7,24 +6,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class RoleType extends AbstractType{
-
-    const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
-    const ROLE_MANAGER = 'ROLE_MANAGER';
-    const ROLE_ENGINEER = 'ROLE_ENGINEER';
-
-    public static function getRoleValues()
-    {
-        return [
-            self::ROLE_CUSTOMER => 'ROLE_CUSTOMER',
-            self::ROLE_MANAGER => 'ROLE_MANAGER',
-            self::ROLE_ENGINEER => 'ROLE_ENGINEER',
-        ];
-    }
+class UserAlterationType extends AbstractType
+{
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text');
+            ->add('username', 'text')
+            ->add('firstName', 'text')
+            ->add('surname', 'text')
+            ->add('email', 'email')
+            ->add('isActive', 'checkbox')
+            ->add('role', 'entity', array(
+                'class' => 'AppBundle:Role',
+                'property' => 'name'));
     }
 
     /**
@@ -33,22 +27,22 @@ class RoleType extends AbstractType{
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'AppBundle\Entity\Role',
+            'data_class' => 'AppBundle\Entity\User',
             'csrf_protection' => false,
             'cascade_validation' => true,
-            'validation_groups' => ['role']
+            'validation_groups' => ['user']
         ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Role'
+            'data_class' => 'AppBundle\Entity\User'
         ));
     }
 
     public function getName()
     {
-        return 'role';
+        return 'userAlteration';
     }
 }

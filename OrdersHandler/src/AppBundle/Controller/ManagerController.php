@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Form\Type\RoleType;
+use AppBundle\Form\Type\UserAlterationType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Form\Type\RegistrationType;
 use AppBundle\Form\Model\Registration;
@@ -216,8 +217,60 @@ class ManagerController extends Controller
         );
     }
 
-    public function usersEditManagerAction(Request $request)
+    public function usersEditManagerAction(Request $request, $id)
     {
+        $em = $this->getDoctrine()->getManager();
 
+        $entity = $em->getRepository('AppBundle:User')->find($id);
+
+        if (!$entity) {
+            try {
+                throw $this->createNotFoundException('Unable to find User entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
+        if ($entity->getRole()->getName() === RoleType::ROLE_MANAGER || $entity->getId() === $this->getUser()->getId()) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        'Access denied to edit this user.'
+                    ]
+                )
+            );
+        }
+
+        $editForm = $this->createForm(new UserAlterationType(), $entity, array(
+            'action' => $this->generateUrl('manager_users_edit', array('id' => $entity->getId())),
+            'method' => 'PUT',
+        ));
+        $editForm->add('submit', 'submit', array('label' => 'Update'));
+        if ($request->isMethod('PUT')) {
+            $editForm->handleRequest($request);
+
+            if ($editForm->isValid()) {
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('manager_users_show', array('id' => $id)));
+            }
+
+            return $this->render('AppBundle:User:edit.html.twig', array(
+                    'user' => $entity,
+                    'edit_form' => $editForm->createView()
+                )
+            );
+        }
+
+        return $this->render('AppBundle:User:edit.html.twig', array(
+                'user' => $entity,
+                'edit_form' => $editForm->createView()
+            )
+        );
     }
 }

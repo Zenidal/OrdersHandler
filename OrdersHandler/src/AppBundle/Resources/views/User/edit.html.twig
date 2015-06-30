@@ -1,0 +1,41 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="manager-users-show">
+        <div class="container-fluid">
+            <legend>Alteration user({{ user.getUsername() }})</legend>
+            <div class="manager-users-show-error">
+                {{ form_errors(edit_form) }}
+            </div>
+            <div class="manager-users-show-form">
+                {{ form_start(edit_form) }}
+                <div class="form-group">
+                    <label for="user_username">Username</label>
+                    {{ form_widget(edit_form.username, { 'attr': {'class': 'form-control', 'placeholder': 'Enter username'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="user_firstName">First name</label>
+                    {{ form_widget(edit_form.firstName, { 'attr': {'class': 'form-control', 'placeholder': 'Enter first name'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="user_surname">Surname</label>
+                    {{ form_widget(edit_form.surname, { 'attr': {'class': 'form-control', 'placeholder': 'Enter surname'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="user_email">E-mail</label>
+                    {{ form_widget(edit_form.email, { 'attr': {'class': 'form-control', 'placeholder': 'Enter e-mail'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="user_role">Role</label>
+                    {{ form_widget(edit_form.role, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="user_isActive">Is active</label>
+                    {{ form_widget(edit_form.isActive) }}
+                </div>
+                {{ form_widget(edit_form.submit, { 'attr': {'class': 'btn btn-default'} }) }}
+                {{ form_end(edit_form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
