@@ -94,5 +94,10 @@ manager_places_delete:
     pattern:   /manager/places/{id}/delete
     defaults:  { _controller: AppBundle:Manager:placesDeleteManager }
 
+manager_places_edit:
+    pattern:   /manager/places/{id}/edit
+    defaults:  { _controller: AppBundle:Manager:placesEditManager }
+
+
 logout:
     pattern:     /logout

@@ -1,0 +1,25 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="manager-places-show">
+        <div class="container-fluid">
+            <legend>Alteration place({{ place.getName() }})</legend>
+            <div class="manager-places-show-error">
+                {{ form_errors(edit_form) }}
+            </div>
+            <div class="manager-places-show-form">
+                {{ form_start(edit_form) }}
+                <div class="form-group">
+                    <label for="place_name">Place name</label>
+                    {{ form_widget(edit_form.name, { 'attr': {'class': 'form-control', 'placeholder': 'Enter place name'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="place_company">Company name</label>
+                    {{ form_widget(edit_form.company, { 'attr': {'class': 'form-control'}}) }}
+                </div>
+                {{ form_widget(edit_form.submit, { 'attr': {'class': 'btn btn-default'} }) }}
+                {{ form_end(edit_form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

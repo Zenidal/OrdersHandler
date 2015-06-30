@@ -396,4 +396,52 @@ class ManagerController extends Controller
             ]
         );
     }
+
+    public function placesEditManagerAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:Place')->find($id);
+
+        if (!$entity) {
+            try {
+                throw $this->createNotFoundException('Unable to find Place entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
+        $editForm = $this->createForm(new PlaceType(), $entity, array(
+            'action' => $this->generateUrl('manager_places_edit', array('id' => $entity->getId())),
+            'method' => 'PUT',
+        ));
+        $editForm->add('submit', 'submit', array('label' => 'Update'));
+        if ($request->isMethod('PUT')) {
+            $editForm->handleRequest($request);
+
+            if ($editForm->isValid()) {
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('manager_places_show', array('id' => $id)));
+            }
+
+            return $this->render('AppBundle:Place:edit.html.twig', array(
+                    'place' => $entity,
+                    'edit_form' => $editForm->createView()
+                )
+            );
+        }
+
+        return $this->render('AppBundle:Place:edit.html.twig', array(
+                'place' => $entity,
+                'edit_form' => $editForm->createView()
+            )
+        );
+    }
 }

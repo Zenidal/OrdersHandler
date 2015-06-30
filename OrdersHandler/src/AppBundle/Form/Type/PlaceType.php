@@ -16,7 +16,7 @@ class PlaceType extends AbstractType
             ->add('company', 'entity', array(
                 'class' => 'AppBundle:Company',
                 'property' => 'name'))
-            ->add('create', 'submit');
+            ->add('submit', 'submit');
     }
 
     /**
