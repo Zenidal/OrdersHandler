@@ -93,7 +93,7 @@
                         </thead>
                         <tbody>
                         {% for place in places %}
-                            <tr>
+                            <tr onclick="placeShow({{ place.getId() }})">
                                 <td>{{ place.getId()|e }}</td>
                                 <td>{{ place.getName()|e }}</td>
                                 <td>{{ place.getCompany().getName()|e }}</td>

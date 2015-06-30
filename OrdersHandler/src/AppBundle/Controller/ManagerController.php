@@ -308,4 +308,92 @@ class ManagerController extends Controller
             )
         );
     }
+
+    public function placesShowManagerAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:Place')->find($id);
+
+        if (!$entity) {
+            try {
+                throw $this->createNotFoundException('Unable to find Place entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+        return $this->render('AppBundle:Place:show.html.twig', array(
+                'place' => $entity
+            )
+        );
+    }
+
+    public function placesDeleteManagerAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:Place')->find($id);
+
+        if (!$entity) {
+            try {
+                throw $this->createNotFoundException('Unable to find Place entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
+        $deleteForm = $this->createFormBuilder()
+            ->setAction($this->generateUrl('manager_places_delete', array(
+                'id' => $id
+            )))
+            ->setMethod('POST')
+            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            if (!$entity) {
+                try {
+                    throw $this->createNotFoundException('Unable to find Place entity.');
+                } catch (NotFoundHttpException $ex) {
+                    return $this->render('default/index.html.twig', array(
+                            'errorMessages' => [
+                                $ex->getMessage()
+                            ]
+                        )
+                    );
+                }
+            }
+
+            $deleteForm->handleRequest($request);
+            if ($deleteForm->isValid()) {
+                $em->remove($entity);
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('manager'));
+            }
+            return $this->render('AppBundle:Place:delete.html.twig', [
+                    'deleteForm' => $deleteForm->createView(),
+                    'place' => $entity
+                ]
+            );
+        }
+
+        return $this->render('AppBundle:Place:delete.html.twig', [
+                'delete_form' => $deleteForm->createView(),
+                'place' => $entity
+            ]
+        );
+    }
 }

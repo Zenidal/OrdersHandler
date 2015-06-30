@@ -1,0 +1,27 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="manager-places-show">
+        <div class="container-fluid">
+            <legend>User {{ place.getName() }}</legend>
+            <table class="table table-striped">
+                <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ place.id }}</td>
+                </tr>
+                <tr>
+                    <th>Place name</th>
+                    <td>{{ place.name }}</td>
+                </tr>
+                <tr>
+                    <th>Place of company</th>
+                    <td>{{ place.getCompany() ? place.getCompany().name : '' }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <a class="btn btn-default" href="/manager/places/{{ place.id }}/delete">Delete place</a>
+            <a class="btn btn-default" href="/manager/places/{{ place.id }}/edit">Edit place</a>
+        </div>
+    </div>
+{% endblock %}

@@ -26,3 +26,7 @@ function userShow(id){
 function repairOrderShow(id){
     window.location.href = '/repair_orders/' +id;
 }
+
+function placeShow(id){
+    window.location.href = '/manager/places/' +id;
+}
