@@ -6,48 +6,102 @@
             <legend>
                 Manager page
             </legend>
-            <div class="row">
-                <div class="manage-users col-md-4 col-xs-12">
-                    <div class="thumbnail">
-                        <div class="manager text-center text-uppercase">Manage users</div>
-                        {% if users %}
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Role</th>
-                                        <th>Username</th>
-                                        <th>First name</th>
-                                        <th>Surname</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for user in users %}
-                                        <tr>
-                                            <td>{{ user.getId()|e }}</td>
-                                            <td>{{ user.getRole().getName()|e }}</td>
-                                            <td>{{ user.getUsername()|e }}</td>
-                                            <td>{{ user.getFirstName()|e }}</td>
-                                            <td>{{ user.getSurname()|e }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        {% else %}
-                            <li><em>No user found</em></li>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="manage-companies col-md-4 col-xs-12">
-                    <div class="thumbnail text-center">
-                        <div class="text-center text-uppercase">Manage companies</div>
-                    </div>
-                </div>
-                <div class="manage-places col-md-4 col-xs-12">
-                    <div class="thumbnail text-center">
-                        <div class="text-center text-uppercase">Manage places</div>
-                    </div>
-                </div>
+            <div class="manager-nav">
+                <ul class="nav nav-tabs">
+                    {% if users is defined %}
+                        <li role="presentation" class="active"><a href="/manager/users">Manage users <span
+                                        class="badge">{{ users|length }}</span></a></li>
+                    {% else %}
+                        <li role="presentation"><a href="/manager/users">Manage users</a></li>
+                    {% endif %}
+
+                    {% if companies is defined %}
+                        <li role="presentation" class="active"><a href="/manager/companies">Manage companies <span
+                                        class="badge">{{ companies|length }}</span></a></li>
+                    {% else %}
+                        <li role="presentation"><a href="/manager/companies">Manage companies</a></li>
+                    {% endif %}
+
+                    {% if places is defined %}
+                        <li role="presentation" class="active"><a href="/manager/places">Manage places <span
+                                        class="badge">{{ places|length }}</span></a></li>
+                    {% else %}
+                        <li role="presentation"><a href="/manager/places">Manage places</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="manager-content">
+                {% if users is defined %}
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <th>Id</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>First name</th>
+                        <th>Surname</th>
+                        <th>E-mail</th>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.getId()|e }}</td>
+                                <td>{{ user.getUsername()|e }}</td>
+                                <td>{{ user.getRole().getName()|e }}</td>
+                                <td>{{ user.getFirstName()|e }}</td>
+                                <td>{{ user.getSurname()|e }}</td>
+                                <td>{{ user.getEmail()|e }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <a class="btn btn-default" href="/manager/users/new">Add user</a>
+                {% endif %}
+
+                {% if companies is defined %}
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <th>Id</th>
+                        <th>Company name</th>
+                        <th>Places</th>
+                        </thead>
+                        <tbody>
+                        {% for company in companies %}
+                            <tr>
+                                <td>{{ company.getId()|e }}</td>
+                                <td>{{ company.getName()|e }}</td>
+                                {% if company.getPlaces() %}
+                                    <td>
+                                        <ul>
+                                            {% for place in company.getPlaces() %}
+                                                <li>{{ place.getName()|e }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                {% if places is defined %}
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <th>Id</th>
+                        <th>Place name</th>
+                        <th>Company</th>
+                        </thead>
+                        <tbody>
+                        {% for place in places %}
+                            <tr>
+                                <td>{{ place.getId()|e }}</td>
+                                <td>{{ place.getName()|e }}</td>
+                                <td>{{ place.getCompany().getName()|e }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
             </div>
         </div>
     </div>

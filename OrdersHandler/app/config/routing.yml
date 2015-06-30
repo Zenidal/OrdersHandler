@@ -54,5 +54,21 @@ manager:
     pattern:   /manager
     defaults:  { _controller: AppBundle:Manager:index }
 
+manager_users:
+    pattern:   /manager/users
+    defaults:  { _controller: AppBundle:Manager:usersManager }
+
+manager_users_create:
+    pattern:   /manager/users/new
+    defaults:  { _controller: AppBundle:Manager:usersCreateManager }
+
+manager_companies:
+    pattern:   /manager/companies
+    defaults:  { _controller: AppBundle:Manager:companiesManager }
+
+manager_places:
+    pattern:   /manager/places
+    defaults:  { _controller: AppBundle:Manager:placesManager }
+
 logout:
     pattern:     /logout

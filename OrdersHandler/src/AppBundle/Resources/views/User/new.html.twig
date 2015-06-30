@@ -1,0 +1,45 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="manager-users-new">
+        <div class="container-fluid">
+            <legend>User creation</legend>
+            <div class="manager-users-new-error">
+                {{ form_errors(form) }}
+            </div>
+            <div class="manager-users-new-form">
+                {{ form_start(form) }}
+                <div class="form-group">
+                    <label for="registration_user_username">Username</label>
+                    {{ form_widget(form.user.username, { 'attr': {'class': 'form-control', 'placeholder': 'Enter username'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="registration_user_password_password">Password</label>
+                    {{ form_widget(form.user.password.password, { 'attr': {'class': 'form-control', 'placeholder': 'Enter password'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="registration_user_password_confirm">Confirm password</label>
+                    {{ form_widget(form.user.password.confirm, { 'attr': {'class': 'form-control', 'placeholder': 'Confirm password'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="registration_user_companies">Companies</label>
+                    {{ form_widget(form.user.companies, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="registration_user_firstName">Name</label>
+                    {{ form_widget(form.user.firstName, { 'attr': {'class': 'form-control', 'placeholder': 'Enter name'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="registration_user_second_name">Surname</label>
+                    {{ form_widget(form.user.surname, { 'attr': {'class': 'form-control', 'placeholder': 'Enter surname'} }) }}
+                </div>
+                <div class="form-group">
+                    <label for="registration_user_email">E-mail</label>
+                    {{ form_widget(form.user.email, { 'attr': {'class': 'form-control', 'placeholder': 'Enter e-mail'} }) }}
+                </div>
+                {{ form_widget(form.register, { 'attr': {'class': 'btn btn-default'} }) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

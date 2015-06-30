@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\Type\RoleType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use AppBundle\Form\Type\RegistrationType;
@@ -38,7 +39,7 @@ class AccountController extends Controller
                 $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
                 $user->setPassword($password);
 
-                $user->setRole($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role')->findRoleByName('Customer'));
+                $user->setRole($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role')->findRoleByName(RoleType::ROLE_CUSTOMER));
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($user);
