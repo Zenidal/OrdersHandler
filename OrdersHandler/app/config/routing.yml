@@ -78,6 +78,22 @@ manager_companies:
     pattern:   /manager/companies
     defaults:  { _controller: AppBundle:Manager:companiesManager }
 
+manager_companies_create:
+    pattern:   /manager/companies/new
+    defaults:  { _controller: AppBundle:Manager:companiesCreateManager }
+
+manager_companies_show:
+    pattern:   /manager/companies/{id}
+    defaults:  { _controller: AppBundle:Manager:companiesShowManager }
+
+manager_companies_delete:
+    pattern:   /manager/companies/{id}/delete
+    defaults:  { _controller: AppBundle:Manager:companiesDeleteManager }
+
+manager_companies_edit:
+    pattern:   /manager/companies/{id}/edit
+    defaults:  { _controller: AppBundle:Manager:companiesEditManager }
+
 manager_places:
     pattern:   /manager/places
     defaults:  { _controller: AppBundle:Manager:placesManager }

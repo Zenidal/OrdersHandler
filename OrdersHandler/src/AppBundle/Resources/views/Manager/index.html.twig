@@ -66,7 +66,7 @@
                         </thead>
                         <tbody>
                         {% for company in companies %}
-                            <tr>
+                            <tr onclick="companyShow({{ company.getId() }})">
                                 <td>{{ company.getId()|e }}</td>
                                 <td>{{ company.getName()|e }}</td>
                                 {% if company.getPlaces() %}
@@ -82,6 +82,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                    <a class="btn btn-default" href="/manager/companies/new">Add company</a>
                 {% endif %}
 
                 {% if places is defined %}

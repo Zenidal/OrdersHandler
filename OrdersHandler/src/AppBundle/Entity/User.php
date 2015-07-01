@@ -72,13 +72,13 @@ class User implements UserInterface, \Serializable
     private $repairOrders;
 
     /**
-    * @var Role
-    *
-    * @ORM\ManyToOne(targetEntity="Role")
-    * @ORM\JoinColumns({
-    *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-    * })
-    */
+     * @var Role
+     *
+     * @ORM\ManyToOne(targetEntity="Role")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     * })
+     */
     private $role;
 
     /**
@@ -87,14 +87,9 @@ class User implements UserInterface, \Serializable
     private $isActive = true;
 
     /**
-     * @var Company[]
-     *
-     * @ORM\ManyToMany(targetEntity="Company")
-     * @ORM\JoinTable(name="users_companies",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="company_id", referencedColumnName="id")}
-     *      )
-     */
+     * @ORM\ManyToMany(targetEntity="Company", inversedBy="users")
+     * @ORM\JoinTable(name="users_companies")
+     **/
     private $companies;
 
     /**

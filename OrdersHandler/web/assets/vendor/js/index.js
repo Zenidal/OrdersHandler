@@ -30,3 +30,7 @@ function repairOrderShow(id){
 function placeShow(id){
     window.location.href = '/manager/places/' +id;
 }
+
+function companyShow(id){
+    window.location.href = '/manager/companies/' +id;
+}

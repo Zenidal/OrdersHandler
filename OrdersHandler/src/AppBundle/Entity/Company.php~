@@ -43,13 +43,8 @@ class Company
     private $places;
 
     /**
-     * @var User[]
-     *
-     * @ORM\JoinTable(name="users_companies",
-     *      joinColumns={@ORM\JoinColumn(name="company_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
-     *      )
-     */
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="companys")
+     **/
     private $users;
 
     /**

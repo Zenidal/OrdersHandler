@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Company;
 use AppBundle\Entity\Place;
 use AppBundle\Form\Type\PlaceType;
+use AppBundle\Form\Type\CompanyType;
 use AppBundle\Form\Type\RoleType;
 use AppBundle\Form\Type\UserAlterationType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -290,7 +292,7 @@ class ManagerController extends Controller
                 $em->persist($place);
                 $em->flush();
 
-                return $this->redirectToRoute('manager');
+                return $this->redirectToRoute('manager_places');
             } else {
                 return $this->render(
                     'AppBundle:Place:new.html.twig', array(
@@ -442,6 +444,131 @@ class ManagerController extends Controller
                 'place' => $entity,
                 'edit_form' => $editForm->createView()
             )
+        );
+    }
+
+    public function companiesCreateManagerAction(Request $request)
+    {
+        $form = $this->createForm(new CompanyType(), new Company(), array(
+            'action' => $this->generateUrl('manager_companies_create'),
+        ));
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $company = $form->getData();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($company);
+                $em->flush();
+
+                return $this->redirectToRoute('manager_companies');
+            } else {
+                return $this->render(
+                    'AppBundle:Company:new.html.twig', array(
+                        'form' => $form->createView(),
+                        'errors' => $errors = $this->get('validator')->validate($form)
+                    )
+                );
+            }
+        }
+
+        return $this->render(
+            'AppBundle:Company:new.html.twig', array(
+                'form' => $form->createView(),
+                'errors' => null
+            )
+        );
+    }
+
+    public function companiesShowManagerAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:Company')->find($id);
+
+        if (!$entity) {
+            try {
+                throw $this->createNotFoundException('Unable to find Company entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+        return $this->render('AppBundle:Company:show.html.twig', array(
+                'company' => $entity
+            )
+        );
+    }
+
+    public function companiesDeleteManagerAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:Company')->find($id);
+
+        if (!$entity) {
+            try {
+                throw $this->createNotFoundException('Unable to find Company entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
+        $deleteForm = $this->createFormBuilder()
+            ->setAction($this->generateUrl('manager_companies_delete', array(
+                'id' => $id
+            )))
+            ->setMethod('POST')
+            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            if (!$entity) {
+                try {
+                    throw $this->createNotFoundException('Unable to find Company entity.');
+                } catch (NotFoundHttpException $ex) {
+                    return $this->render('default/index.html.twig', array(
+                            'errorMessages' => [
+                                $ex->getMessage()
+                            ]
+                        )
+                    );
+                }
+            }
+
+            $deleteForm->handleRequest($request);
+            if ($deleteForm->isValid()) {
+                $users = $entity->getUsers();
+                foreach($users as $user){
+                    $user->removeCompany($entity);
+                }
+                $em->remove($entity);
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('manager_companies'));
+            }
+            return $this->render('AppBundle:Company:delete.html.twig', [
+                    'deleteForm' => $deleteForm->createView(),
+                    'company' => $entity
+                ]
+            );
+        }
+
+        return $this->render('AppBundle:Company:delete.html.twig', [
+                'delete_form' => $deleteForm->createView(),
+                'company' => $entity
+            ]
         );
     }
 }
