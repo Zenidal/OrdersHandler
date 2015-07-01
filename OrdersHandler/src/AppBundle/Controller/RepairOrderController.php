@@ -35,6 +35,9 @@ class RepairOrderController extends Controller
     public function newAction(Request $request)
     {
         $user = $this->getUser();
+        if($user->getRole()->getName() === RoleType::ROLE_MANAGER){
+            return $this->redirectToRoute('repair_orders');
+        }
 
         $entity = new RepairOrder();
         try {

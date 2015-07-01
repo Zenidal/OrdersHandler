@@ -3,7 +3,13 @@
 {% block body -%}
     <div class="repair_orders">
         <div class="container-fluid">
-            <legend><a class="glyphicon glyphicon-plus" href="{{ path('repairorder_new') }}"></a> Repair orders</legend>
+            <legend>
+                {% if app.user and is_granted('ROLE_MANAGER') %}
+                    Repair orders
+                {% else %}
+                    <a class="glyphicon glyphicon-plus" href="{{ path('repairorder_new') }}"></a> Repair orders
+                {% endif %}
+            </legend>
             <table class="records_list table table-hover table-striped">
                 <thead>
                 <tr>
