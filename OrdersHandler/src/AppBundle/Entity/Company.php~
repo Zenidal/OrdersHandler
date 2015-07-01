@@ -43,7 +43,7 @@ class Company
     private $places;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="companys")
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="companies")
      **/
     private $users;
 

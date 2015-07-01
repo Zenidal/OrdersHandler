@@ -13,6 +13,7 @@ class RepairOrderVoter implements VoterInterface
     const EDIT = 'edit';
     const CREATE = 'create';
     const DELETE = 'delete';
+    const ASSIGN = 'assign';
 
     public function supportsAttribute($attribute)
     {
@@ -20,7 +21,8 @@ class RepairOrderVoter implements VoterInterface
             self::VIEW,
             self::EDIT,
             self::CREATE,
-            self::DELETE
+            self::DELETE,
+            self::ASSIGN
         ));
     }
 
@@ -89,11 +91,13 @@ class RepairOrderVoter implements VoterInterface
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
+
             case self::CREATE:
-                if (in_array($user->getRole()->getName(), RoleType::getRoleValues())){
+                if (in_array($user->getRole()->getName(), RoleType::getRoleValues())) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
+
             case self::DELETE:
                 if ($user->getRole()->getName() === RoleType::ROLE_MANAGER ||
                     (
@@ -102,6 +106,15 @@ class RepairOrderVoter implements VoterInterface
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
+                break;
+
+            case self::ASSIGN:
+                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_OPEN, RepairOrderType::STATUS_ASSIGNED]) &&
+                    $user->getRole()->getName() === RoleType::ROLE_MANAGER
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+                break;
         }
 
         return VoterInterface::ACCESS_DENIED;

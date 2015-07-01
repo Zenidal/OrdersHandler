@@ -71,6 +71,25 @@ class RepairOrder
      */
     private $place;
 
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="engineer_id", referencedColumnName="id")
+     * })
+     */
+    private $engineer;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $startDate;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $endDate;
 
     /**
      * Get id
@@ -230,5 +249,74 @@ class RepairOrder
     public function getTextStatus()
     {
        return RepairOrderType::getStatusByValue($this->status);
+    }
+
+    /**
+     * Set startDate
+     *
+     * @param \DateTime $startDate
+     * @return RepairOrder
+     */
+    public function setStartDate($startDate)
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    /**
+     * Get startDate
+     *
+     * @return \DateTime 
+     */
+    public function getStartDate()
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * Set endDate
+     *
+     * @param \DateTime $endDate
+     * @return RepairOrder
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    /**
+     * Get endDate
+     *
+     * @return \DateTime 
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * Set engineer
+     *
+     * @param \AppBundle\Entity\User $engineer
+     * @return RepairOrder
+     */
+    public function setEngineer(\AppBundle\Entity\User $engineer = null)
+    {
+        $this->engineer = $engineer;
+
+        return $this;
+    }
+
+    /**
+     * Get engineer
+     *
+     * @return \AppBundle\Entity\User 
+     */
+    public function getEngineer()
+    {
+        return $this->engineer;
     }
 }

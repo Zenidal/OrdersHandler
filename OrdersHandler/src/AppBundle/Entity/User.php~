@@ -72,6 +72,13 @@ class User implements UserInterface, \Serializable
     private $repairOrders;
 
     /**
+     * @var repairOrder[]
+     *
+     * @ORM\OneToMany(targetEntity="RepairOrder", mappedBy="user", cascade={"remove"})
+     */
+    private $assignedRepairOrders;
+
+    /**
      * @var Role
      *
      * @ORM\ManyToOne(targetEntity="Role")
@@ -88,7 +95,7 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\ManyToMany(targetEntity="Company", inversedBy="users")
-     * @ORM\JoinTable(name="users_companys")
+     * @ORM\JoinTable(name="users_companies")
      **/
     private $companies;
 
@@ -398,5 +405,38 @@ class User implements UserInterface, \Serializable
     public function getCompanies()
     {
         return $this->companies;
+    }
+
+    /**
+     * Add assignedRepairOrders
+     *
+     * @param \AppBundle\Entity\RepairOrder $assignedRepairOrders
+     * @return User
+     */
+    public function addAssignedRepairOrder(\AppBundle\Entity\RepairOrder $assignedRepairOrders)
+    {
+        $this->assignedRepairOrders[] = $assignedRepairOrders;
+
+        return $this;
+    }
+
+    /**
+     * Remove assignedRepairOrders
+     *
+     * @param \AppBundle\Entity\RepairOrder $assignedRepairOrders
+     */
+    public function removeAssignedRepairOrder(\AppBundle\Entity\RepairOrder $assignedRepairOrders)
+    {
+        $this->assignedRepairOrders->removeElement($assignedRepairOrders);
+    }
+
+    /**
+     * Get assignedRepairOrders
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAssignedRepairOrders()
+    {
+        return $this->assignedRepairOrders;
     }
 }

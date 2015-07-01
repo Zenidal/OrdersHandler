@@ -34,3 +34,9 @@ function placeShow(id){
 function companyShow(id){
     window.location.href = '/manager/companies/' +id;
 }
+
+function assignOrder(orderId, userId){
+    href = '/repair_orders/' + orderId + '/assign/' + userId;
+    $('#assign-order-href').attr('href', href);
+    $('#assign-modal').modal('show');
+}

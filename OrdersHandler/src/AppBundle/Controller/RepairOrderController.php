@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\Type\RoleType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\RepairOrder;
@@ -47,6 +48,9 @@ class RepairOrderController extends Controller
             );
         }
         $entity->setStatus(RepairOrderType::STATUS_OPEN);
+        $entity->setEngineer(null);
+        $entity->setStartDate(null);
+        $entity->setEndDate(null);
         $entity->setUser($user);
 
         $form = $this->createForm($this->get('form.order.type'), $entity, array(
@@ -211,5 +215,53 @@ class RepairOrderController extends Controller
                 'delete_form' => $deleteForm->createView()
             )
         );
+    }
+
+    public function assignAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $repairOrder = $em->getRepository('AppBundle:RepairOrder')->find($id);
+        $users = $em->getRepository('AppBundle:User')->findAll();
+
+        try {
+            $this->denyAccessUnlessGranted('assign', $repairOrder, 'Access denied to assign order.');
+        } catch (AccessDeniedException $ex) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        $ex->getMessage()
+                    ]
+                )
+            );
+        }
+        $engineers = [];
+        foreach ($users as $user) {
+            foreach ($user->getCompanies() as $company) {
+                $companiesNames[] = $company->getName();
+            }
+            if ($user->getRole()->getName() === RoleType::ROLE_ENGINEER){
+                if (in_array($repairOrder->getCompany()->getName(), $companiesNames)) {
+                    $engineers[] = $user;
+                }
+            }
+        }
+
+        return $this->render('AppBundle:RepairOrder:assign.html.twig', [
+            'engineers' => $engineers,
+            'repairOrder' => $repairOrder
+        ]);
+    }
+
+    public function assignAcceptAction($orderId, $engineerId)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $repairOrder = $em->getRepository('AppBundle:RepairOrder')->find($orderId);
+        $engineer = $em->getRepository('AppBundle:User')->find($engineerId);
+
+        $repairOrder->setEngineer($engineer);
+        $repairOrder->setStatus(RepairOrderType::STATUS_ASSIGNED);
+        $em->flush();
+        return $this->redirectToRoute('repair_orders');
     }
 }

@@ -42,6 +42,14 @@ repairorder_show:
     pattern:     /repair_orders/{id}
     defaults: { _controller: AppBundle:RepairOrder:show }
 
+repairorder_assign:
+    pattern:     /repair_orders/{id}/assign
+    defaults: { _controller: AppBundle:RepairOrder:assign }
+
+repairorder_assign_accept:
+    pattern:     /repair_orders/{orderId}/assign/{engineerId}
+    defaults: { _controller: AppBundle:RepairOrder:assignAccept }
+
 profile:
     pattern:     /profile
     defaults: { _controller: AppBundle:Profile:index }
