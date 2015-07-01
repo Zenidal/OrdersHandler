@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="manager-companies-show">
+        <div class="container-fluid">
+            <legend>Alteration company({{ company.getName() }})</legend>
+            <div class="manager-companies-show-error">
+                {{ form_errors(edit_form) }}
+            </div>
+            <div class="manager-companies-show-form">
+                {{ form_start(edit_form) }}
+                <div class="form-group">
+                    <label for="company_name">Company name</label>
+                    {{ form_widget(edit_form.name, { 'attr': {'class': 'form-control', 'placeholder': 'Enter company name'} }) }}
+                </div>
+                {{ form_widget(edit_form.submit, { 'attr': {'class': 'btn btn-default'} }) }}
+                {{ form_end(edit_form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
