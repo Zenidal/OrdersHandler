@@ -39,6 +39,10 @@
                     <th>Status</th>
                     <td>{{ entity.textStatus }}</td>
                 </tr>
+                <tr>
+                    <th>Engineer</th>
+                    <td>{{ entity.getEngineer() ? entity.getEngineer().username : ''  }}</td>
+                </tr>
                 </tbody>
             </table>
             <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/assign">Assign order</a>

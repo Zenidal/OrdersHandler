@@ -78,6 +78,10 @@ class RepairOrderVoter implements VoterInterface
                 if ($repairOrder->getUser() === $user) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
+                if(!is_null($repairOrder->getEngineer()) && $repairOrder->getEngineer()->getId() === $user->getId() && $user->getRole()->getName() === RoleType::ROLE_ENGINEER)
+                {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
                 break;
 
             case self::EDIT:

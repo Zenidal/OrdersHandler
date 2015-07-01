@@ -18,7 +18,7 @@ class RepairOrderController extends Controller
         $entities = $em->getRepository('AppBundle:RepairOrder')->findAll();
         foreach ($entities as $entity) {
             try {
-                $this->denyAccessUnlessGranted('view', $entity, 'Access denied!');
+                $this->denyAccessUnlessGranted('view', $entity);
             } catch (AccessDeniedException $ex) {
                 $key = array_search($entity, $entities);
                 unset($entities[$key]);

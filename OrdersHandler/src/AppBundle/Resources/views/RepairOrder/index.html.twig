@@ -14,6 +14,7 @@
                     <th>Description</th>
                     <th>Address</th>
                     <th>Status</th>
+                    <th>Engineer</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,6 +27,7 @@
                         <td>{{ entity.getDescription() }}</td>
                         <td>{{ entity.getAddress() }}</td>
                         <td>{{ entity.getTextStatus() }}</td>
+                        <td>{{ entity.getEngineer() ? entity.getEngineer().getUsername() : '' }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
