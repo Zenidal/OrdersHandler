@@ -1,16 +1,42 @@
 AppBundle\Entity\RepairOrder:
     properties:
         address:
-        - NotBlank: { groups: [default] }
-        - Length: { min: 7, max: 255, minMessage: 'An address value should be in the range of 7 to 255 characters.', maxMessage: 'An address value should be in the range of 7 to 255 characters.', groups: [default] }
+        - NotBlank: {}
+        - Length: { min: 7, max: 255, minMessage: 'An address value should be in the range of 7 to 255 characters.', maxMessage: 'An address value should be in the range of 7 to 255 characters.' }
         description:
-        - NotBlank: { groups: [default] }
-        - Length: { min: 7, max: 255, minMessage: 'A description value should be in the range of 7 to 255 characters.', maxMessage: 'A description value should be in the range of 7 to 255 characters.', groups: [default] }
+        - NotBlank: {}
+        - Length: { min: 3, max: 255, minMessage: "A description value should be in the range of 7 to 255 characters.", maxMessage: "A description value should be in the range of 7 to 255 characters." }
 AppBundle\Entity\User:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [username]
+            message: 'This user is already exists.'
     properties:
-        username:
-        - NotBlank: { groups: [default] }
-        - Length: { min: 6, max: 100, minMessage: 'An username value should be in the range of 6 to 100 characters.', maxMessage: 'An username value should be in the range of 6 to 100 characters.', groups: [default] }
         password:
-        - NotBlank: { groups: [default] }
-        - Length: { min: 6, max: 100, minMessage: 'A password value should be in the range of 6 to 100 characters.', maxMessage: 'A password value should be in the range of 6 to 100 characters.', groups: [default] }
+        - NotBlank: ~
+        - Length:
+            min: 6
+            max: 100
+            minMessage: 'An password value should be in the range of 6 to 100 characters.'
+            maxMessage: 'An password value should be in the range of 6 to 100 characters.'
+        firstName:
+        - NotBlank: ~
+        - Length:
+            min: 6
+            max: 100
+            minMessage: 'An first name value should be in the range of 6 to 100 characters.'
+            maxMessage: 'An first name value should be in the range of 6 to 100 characters.'
+        surname:
+        - NotBlank: ~
+        - Length:
+            min: 6
+            max: 100
+            minMessage: 'An surname value should be in the range of 6 to 100 characters.'
+            maxMessage: 'An surname value should be in the range of 6 to 100 characters.'
+        username:
+        - NotBlank: ~
+        - Length:
+            min: 6
+            max: 100
+            minMessage: 'An username value should be in the range of 6 to 100 characters.'
+            maxMessage: 'An username value should be in the range of 6 to 100 characters.'

@@ -3,6 +3,7 @@ namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class RegistrationType extends AbstractType
 {
@@ -10,6 +11,17 @@ class RegistrationType extends AbstractType
     {
         $builder->add('user', new UserType());
         $builder->add('register', 'submit');
+    }
+
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'csrf_protection' => false,
+            'cascade_validation' => true
+        ]);
     }
 
     public function getName()

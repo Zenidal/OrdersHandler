@@ -25,19 +25,6 @@ class UserType extends AbstractType
         ));
     }
 
-    /**
-     * @param OptionsResolverInterface $resolver
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => 'AppBundle\Entity\User',
-            'csrf_protection' => false,
-            'cascade_validation' => true,
-            'validation_groups' => ['user']
-        ]);
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(

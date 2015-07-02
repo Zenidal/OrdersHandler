@@ -15,7 +15,6 @@ use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class AccountController extends Controller
 {
-
     public function registerAction(Request $request)
     {
         $registration = new Registration();
@@ -47,10 +46,15 @@ class AccountController extends Controller
 
                 return $this->redirectToRoute('profile');
             } else {
+                $errors = $this->get('validator')->validate($form);
+                $messages = [];
+                foreach($errors as $error){
+                    $messages[] = $error->getMessage();
+                }
                 return $this->render(
                     'AppBundle:account:register.html.twig', array(
                         'form' => $form->createView(),
-                        'errors' => $errors = $this->get('validator')->validate($form)
+                        'messages' => $messages
                     )
                 );
             }
@@ -59,8 +63,7 @@ class AccountController extends Controller
         return $this->render(
             'AppBundle:account:register.html.twig',
             array(
-                'form' => $form->createView(),
-                'errors' => null
+                'form' => $form->createView()
             )
         );
     }
