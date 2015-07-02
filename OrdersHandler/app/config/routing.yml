@@ -50,6 +50,22 @@ repairorder_assign_accept:
     pattern:     /repair_orders/{orderId}/assign/{engineerId}
     defaults: { _controller: AppBundle:RepairOrder:assignAccept }
 
+repairorder_start:
+    pattern:     /repair_orders/{id}/start
+    defaults: { _controller: AppBundle:RepairOrder:start }
+
+repairorder_finish:
+    pattern:     /repair_orders/{id}/finish
+    defaults: { _controller: AppBundle:RepairOrder:finish }
+
+repairorder_close:
+    pattern:     /repair_orders/{id}/close
+    defaults: { _controller: AppBundle:RepairOrder:close }
+
+repairorder_reopen:
+    pattern:     /repair_orders/{id}/reopen
+    defaults: { _controller: AppBundle:RepairOrder:reopen }
+
 profile:
     pattern:     /profile
     defaults: { _controller: AppBundle:Profile:index }

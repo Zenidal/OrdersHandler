@@ -7,7 +7,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\RepairOrder;
 use AppBundle\Form\Type\RepairOrderType;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class RepairOrderController extends Controller
 {
@@ -35,9 +37,6 @@ class RepairOrderController extends Controller
     public function newAction(Request $request)
     {
         $user = $this->getUser();
-        if($user->getRole()->getName() === RoleType::ROLE_MANAGER){
-            return $this->redirectToRoute('repair_orders');
-        }
 
         $entity = new RepairOrder();
         try {
@@ -110,7 +109,12 @@ class RepairOrderController extends Controller
             );
         }
         return $this->render('AppBundle:RepairOrder:show.html.twig', array(
-                'entity' => $entity
+                'entity' => $entity,
+                'isOpened' => ($entity->getStatus() === RepairOrderType::STATUS_OPEN || $entity->getStatus() === RepairOrderType::STATUS_REOPENED) ? true : false,
+                'isAssigned' => $entity->getStatus() === RepairOrderType::STATUS_ASSIGNED ? true : false,
+                'isStarted' => $entity->getStatus() === RepairOrderType::STATUS_IN_PROCESS ? true : false,
+                'isFinished' => $entity->getStatus() === RepairOrderType::STATUS_RESOLVED ? true : false,
+                'isReopened' => $entity->getStatus() === RepairOrderType::STATUS_REOPENED ? true : false,
             )
         );
     }
@@ -133,7 +137,17 @@ class RepairOrderController extends Controller
         }
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+            try {
+                throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
         }
 
         $editForm = $this->createForm($this->get('form.order.type'), $entity, array(
@@ -227,6 +241,20 @@ class RepairOrderController extends Controller
         $repairOrder = $em->getRepository('AppBundle:RepairOrder')->find($id);
         $users = $em->getRepository('AppBundle:User')->findAll();
 
+        if (!$repairOrder) {
+            try {
+                throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
         try {
             $this->denyAccessUnlessGranted('assign', $repairOrder, 'Access denied to assign order.');
         } catch (AccessDeniedException $ex) {
@@ -242,7 +270,7 @@ class RepairOrderController extends Controller
             foreach ($user->getCompanies() as $company) {
                 $companiesNames[] = $company->getName();
             }
-            if ($user->getRole()->getName() === RoleType::ROLE_ENGINEER){
+            if ($user->getRole()->getName() === RoleType::ROLE_ENGINEER) {
                 if (in_array($repairOrder->getCompany()->getName(), $companiesNames)) {
                     $engineers[] = $user;
                 }
@@ -262,9 +290,207 @@ class RepairOrderController extends Controller
         $repairOrder = $em->getRepository('AppBundle:RepairOrder')->find($orderId);
         $engineer = $em->getRepository('AppBundle:User')->find($engineerId);
 
+        if (!$repairOrder) {
+            try {
+                throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
+        try {
+            $this->denyAccessUnlessGranted('assign', $repairOrder, 'Access denied to assign order.');
+        } catch (AccessDeniedException $ex) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        $ex->getMessage()
+                    ]
+                )
+            );
+        }
+
         $repairOrder->setEngineer($engineer);
         $repairOrder->setStatus(RepairOrderType::STATUS_ASSIGNED);
         $em->flush();
         return $this->redirectToRoute('repair_orders');
+    }
+
+    public function startAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repairOrder = $em->getRepository('AppBundle:RepairOrder')->find($id);
+
+        if (!$repairOrder) {
+            try {
+                throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
+        try {
+            $this->denyAccessUnlessGranted('start', $repairOrder, 'Access denied to start order.');
+        } catch (AccessDeniedException $ex) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        $ex->getMessage()
+                    ]
+                )
+            );
+        }
+
+        $repairOrder->setStatus(RepairOrderType::STATUS_IN_PROCESS);
+        $repairOrder->setStartDate(new \DateTime("now"));
+        $em->flush();
+
+        return $this->redirectToRoute('repair_orders');
+    }
+
+    public function finishAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repairOrder = $em->getRepository('AppBundle:RepairOrder')->find($id);
+
+        if (!$repairOrder) {
+            try {
+                throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
+        try {
+            $this->denyAccessUnlessGranted('finish', $repairOrder, 'Access denied to finish order.');
+        } catch (AccessDeniedException $ex) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        $ex->getMessage()
+                    ]
+                )
+            );
+        }
+
+        $repairOrder->setStatus(RepairOrderType::STATUS_RESOLVED);
+        $repairOrder->setEndDate(new \DateTime("now"));
+        $em->flush();
+
+        return $this->redirectToRoute('repair_orders');
+    }
+
+    public function closeAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repairOrder = $em->getRepository('AppBundle:RepairOrder')->find($id);
+
+        if (!$repairOrder) {
+            try {
+                throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+
+        }
+
+        try {
+            $this->denyAccessUnlessGranted('close', $repairOrder, 'Access denied to close order.');
+        } catch (AccessDeniedException $ex) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        $ex->getMessage()
+                    ]
+                )
+            );
+        }
+
+        $repairOrder->setStatus(RepairOrderType::STATUS_CLOSED);
+        $repairOrder->setComment(null);
+        $em->flush();
+
+        return $this->redirectToRoute('repair_orders');
+    }
+
+    public function reopenAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repairOrder = $em->getRepository('AppBundle:RepairOrder')->find($id);
+
+        if (!$repairOrder) {
+            try {
+                throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+        }
+
+        try {
+            $this->denyAccessUnlessGranted('reopen', $repairOrder, 'Access denied to reopen order.');
+        } catch (AccessDeniedException $ex) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        $ex->getMessage()
+                    ]
+                )
+            );
+        }
+
+        $reopenForm = $this->createFormBuilder($repairOrder)
+            ->setAction($this->generateUrl('repairorder_reopen', array(
+                'id' => $id
+            )))
+            ->setMethod('PUT')
+            ->add('comment', 'text')
+            ->add('submit', 'submit', array('label' => 'Reopen'))
+            ->getForm();
+        if ($request->isMethod('PUT')) {
+            $reopenForm->handleRequest($request);
+
+            if ($reopenForm->isValid()) {
+                $repairOrder->setEngineer(null);
+                $repairOrder->setStatus(RepairOrderType::STATUS_REOPENED);
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('repairorder_show', array('id' => $id)));
+            }
+
+            return $this->render('AppBundle:RepairOrder:reopen.html.twig', array(
+                    'entity' => $repairOrder,
+                    'reopenForm' => $reopenForm->createView()
+                )
+            );
+        }
+
+        return $this->render('AppBundle:RepairOrder:reopen.html.twig', array(
+                'entity' => $repairOrder,
+                'reopenForm' => $reopenForm->createView()
+            )
+        );
     }
 }

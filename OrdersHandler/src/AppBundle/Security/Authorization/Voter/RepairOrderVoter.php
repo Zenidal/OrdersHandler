@@ -14,6 +14,10 @@ class RepairOrderVoter implements VoterInterface
     const CREATE = 'create';
     const DELETE = 'delete';
     const ASSIGN = 'assign';
+    const START = 'start';
+    const FINISH = 'finish';
+    const CLOSE = 'close';
+    const REOPEN = 'reopen';
 
     public function supportsAttribute($attribute)
     {
@@ -22,7 +26,11 @@ class RepairOrderVoter implements VoterInterface
             self::EDIT,
             self::CREATE,
             self::DELETE,
-            self::ASSIGN
+            self::ASSIGN,
+            self::START,
+            self::FINISH,
+            self::CLOSE,
+            self::REOPEN
         ));
     }
 
@@ -78,8 +86,7 @@ class RepairOrderVoter implements VoterInterface
                 if ($repairOrder->getUser() === $user) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
-                if(!is_null($repairOrder->getEngineer()) && $repairOrder->getEngineer()->getId() === $user->getId() && $user->getRole()->getName() === RoleType::ROLE_ENGINEER)
-                {
+                if (!is_null($repairOrder->getEngineer()) && $repairOrder->getEngineer()->getId() === $user->getId() && $user->getRole()->getName() === RoleType::ROLE_ENGINEER) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
@@ -89,7 +96,8 @@ class RepairOrderVoter implements VoterInterface
                 // get the current owner user entity for this data object
                 if ($user->getRole()->getName() === RoleType::ROLE_MANAGER ||
                     (
-                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN
+                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN ||
+                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_REOPENED
                     )
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
@@ -97,7 +105,7 @@ class RepairOrderVoter implements VoterInterface
                 break;
 
             case self::CREATE:
-                if (in_array($user->getRole()->getName(), RoleType::getRoleValues())) {
+                if (in_array($user->getRole()->getName(), [RoleType::ROLE_CUSTOMER])) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
@@ -105,7 +113,8 @@ class RepairOrderVoter implements VoterInterface
             case self::DELETE:
                 if ($user->getRole()->getName() === RoleType::ROLE_MANAGER ||
                     (
-                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN
+                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN ||
+                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_REOPENED
                     )
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
@@ -113,12 +122,58 @@ class RepairOrderVoter implements VoterInterface
                 break;
 
             case self::ASSIGN:
-                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_OPEN, RepairOrderType::STATUS_ASSIGNED]) &&
+                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_OPEN, RepairOrderType::STATUS_ASSIGNED, RepairOrderType::STATUS_REOPENED]) &&
                     $user->getRole()->getName() === RoleType::ROLE_MANAGER
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
+
+            case self::START:
+                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_ASSIGNED]) &&
+                    $repairOrder->getEngineer()->getId() === $user->getId() &&
+                    $user->getRole()->getName() === RoleType::ROLE_ENGINEER
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+                break;
+
+            case self::FINISH:
+                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_IN_PROCESS]) &&
+                    $repairOrder->getEngineer()->getId() === $user->getId() &&
+                    $user->getRole()->getName() === RoleType::ROLE_ENGINEER
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+                break;
+
+            case self::CLOSE:
+                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_RESOLVED]) &&
+                    (
+                        $repairOrder->getUser()->getId() === $user->getId() &&
+                        $user->getRole()->getName() === RoleType::ROLE_CUSTOMER
+                    ) ||
+                    $user->getRole()->getName() === RoleType::ROLE_MANAGER
+
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+                break;
+
+            case self::REOPEN:
+                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_RESOLVED]) &&
+                    (
+                        $repairOrder->getUser()->getId() === $user->getId() &&
+                        $user->getRole()->getName() === RoleType::ROLE_CUSTOMER
+                    ) ||
+                    $user->getRole()->getName() === RoleType::ROLE_MANAGER
+
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+                break;
+
+
         }
 
         return VoterInterface::ACCESS_DENIED;

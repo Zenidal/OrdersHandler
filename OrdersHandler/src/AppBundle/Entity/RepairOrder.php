@@ -92,6 +92,11 @@ class RepairOrder
     private $endDate;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $comment;
+
+    /**
      * Get id
      *
      * @return integer
@@ -155,12 +160,7 @@ class RepairOrder
      */
     public function setStatus($status)
     {
-        if (in_array($status, array_keys(RepairOrderType::getStatusValues()))) {
-            $this->status = $status;
-        } else {
-            $this->status = 0;
-        }
-
+        $this->status = $status;
         return $this;
     }
 
@@ -318,5 +318,28 @@ class RepairOrder
     public function getEngineer()
     {
         return $this->engineer;
+    }
+
+    /**
+     * Set comment
+     *
+     * @param \string $comment
+     * @return RepairOrder
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return \string
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
 }

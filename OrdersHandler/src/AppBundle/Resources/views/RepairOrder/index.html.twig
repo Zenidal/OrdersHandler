@@ -6,6 +6,8 @@
             <legend>
                 {% if app.user and is_granted('ROLE_MANAGER') %}
                     Repair orders
+                {% elseif app.user and is_granted('ROLE_ENGINEER') %}
+                    Repair orders
                 {% else %}
                     <a class="glyphicon glyphicon-plus" href="{{ path('repairorder_new') }}"></a> Repair orders
                 {% endif %}

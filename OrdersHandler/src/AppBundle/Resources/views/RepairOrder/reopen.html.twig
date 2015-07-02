@@ -1,0 +1,23 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="reopen_repairorder">
+        <div class="container-fluid">
+            <legend>
+                Reopening order
+            </legend>
+            <div class="repair_orders-reopen-error">
+                {{ form_errors(reopenForm) }}
+            </div>
+            <div class="repair_orders-reopen-form">
+                {{ form_start(reopenForm) }}
+                <div class="form-group">
+                    <label for="form_comment">Input comment, why we want to reopen order</label>
+                    {{ form_widget(reopenForm.comment, { 'attr': {'class': 'form-control', 'placeholder': 'Enter comment'} }) }}
+                </div>
+                {{ form_widget(reopenForm.submit, { 'attr': {'class': 'btn btn-default'} }) }}
+                {{ form_end(reopenForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

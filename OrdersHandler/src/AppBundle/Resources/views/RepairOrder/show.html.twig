@@ -43,9 +43,28 @@
                     <th>Engineer</th>
                     <td>{{ entity.getEngineer() ? entity.getEngineer().username : ''  }}</td>
                 </tr>
+                {% if isReopened %}
+                    <tr>
+                        <th>The reason of reopening</th></th>
+                        <td>{{ entity.getComment() ? entity.getComment() : '' }}</td>
+                    </tr>
+                {% endif %}
                 </tbody>
             </table>
-            <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/assign">Assign order</a>
+            {% if app.user and is_granted('ROLE_MANAGER') and isOpened %}
+                <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/assign">Assign order</a>
+            {% elseif app.user and is_granted('ROLE_ENGINEER') and isAssigned %}
+                <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/start">Start order</a>
+            {% elseif app.user and is_granted('ROLE_ENGINEER') and isStarted %}
+                <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/finish">Finish order</a>
+            {% elseif app.user and is_granted('ROLE_CUSTOMER') and isFinished %}
+                <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/close">Close order</a>
+                <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/reopen">Reopen order</a>
+            {% elseif app.user and is_granted('ROLE_MANAGER') and isFinished %}
+                <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/close">Close order</a>
+                <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/reopen">Reopen order</a>
+            {% else %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}
