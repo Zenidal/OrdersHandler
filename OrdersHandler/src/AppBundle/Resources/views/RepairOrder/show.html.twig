@@ -51,19 +51,25 @@
                 {% endif %}
                 </tbody>
             </table>
-            {% if app.user and is_granted('ROLE_MANAGER') and isOpened %}
+            <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/history">History</a>
+            {% if app.user and is_granted('assign', entity) %}
                 <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/assign">Assign order</a>
-            {% elseif app.user and is_granted('ROLE_ENGINEER') and isAssigned %}
+            {% endif %}
+
+            {% if app.user and is_granted('start', entity) %}
                 <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/start">Start order</a>
-            {% elseif app.user and is_granted('ROLE_ENGINEER') and isStarted %}
+            {% endif %}
+
+            {% if app.user and is_granted('finish', entity) %}
                 <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/finish">Finish order</a>
-            {% elseif app.user and is_granted('ROLE_CUSTOMER') and isFinished %}
+            {% endif %}
+
+            {% if app.user and is_granted('close', entity) %}
                 <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/close">Close order</a>
+            {% endif %}
+
+            {% if app.user and is_granted('reopen', entity) %}
                 <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/reopen">Reopen order</a>
-            {% elseif app.user and is_granted('ROLE_MANAGER') and isFinished %}
-                <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/close">Close order</a>
-                <a class="btn btn-default" href="/repair_orders/{{ entity.id }}/reopen">Reopen order</a>
-            {% else %}
             {% endif %}
         </div>
     </div>

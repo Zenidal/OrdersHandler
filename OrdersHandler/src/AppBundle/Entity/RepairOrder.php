@@ -37,11 +37,6 @@ class RepairOrder
     private $status;
 
     /**
-     * @var string
-     */
-    private $textStatus;
-
-    /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
@@ -95,6 +90,13 @@ class RepairOrder
      * @ORM\Column(type="string", nullable=true)
      */
     private $comment;
+
+    /**
+     * @var OrderHistory[]
+     *
+     * @ORM\OneToMany(targetEntity="OrderHistory", mappedBy="repairOrder", cascade={"all"})
+     **/
+    private $orderHistory;
 
     /**
      * Get id
@@ -341,5 +343,45 @@ class RepairOrder
     public function getComment()
     {
         return $this->comment;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->orderHistory = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add orderHistory
+     *
+     * @param \AppBundle\Entity\OrderHistory $orderHistory
+     * @return RepairOrder
+     */
+    public function addOrderHistory(\AppBundle\Entity\OrderHistory $orderHistory)
+    {
+        $this->orderHistory[] = $orderHistory;
+
+        return $this;
+    }
+
+    /**
+     * Remove orderHistory
+     *
+     * @param \AppBundle\Entity\OrderHistory $orderHistory
+     */
+    public function removeOrderHistory(\AppBundle\Entity\OrderHistory $orderHistory)
+    {
+        $this->orderHistory->removeElement($orderHistory);
+    }
+
+    /**
+     * Get orderHistory
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOrderHistory()
+    {
+        return $this->orderHistory;
     }
 }

@@ -122,7 +122,7 @@ class RepairOrderVoter implements VoterInterface
                 break;
 
             case self::ASSIGN:
-                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_OPEN, RepairOrderType::STATUS_ASSIGNED, RepairOrderType::STATUS_REOPENED]) &&
+                if (!in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_IN_PROCESS, RepairOrderType::STATUS_CLOSED]) &&
                     $user->getRole()->getName() === RoleType::ROLE_MANAGER
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
@@ -130,11 +130,15 @@ class RepairOrderVoter implements VoterInterface
                 break;
 
             case self::START:
-                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_ASSIGNED]) &&
-                    $repairOrder->getEngineer()->getId() === $user->getId() &&
-                    $user->getRole()->getName() === RoleType::ROLE_ENGINEER
+                if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_ASSIGNED, RepairOrderType::STATUS_OPEN, RepairOrderType::STATUS_REOPENED]) &&
+                    !is_null($repairOrder->getEngineer())
                 ) {
-                    return VoterInterface::ACCESS_GRANTED;
+                    if (
+                        $repairOrder->getEngineer()->getId() === $user->getId() &&
+                        $user->getRole()->getName() === RoleType::ROLE_ENGINEER
+                    ) {
+                        return VoterInterface::ACCESS_GRANTED;
+                    }
                 }
                 break;
 
@@ -150,10 +154,12 @@ class RepairOrderVoter implements VoterInterface
             case self::CLOSE:
                 if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_RESOLVED]) &&
                     (
-                        $repairOrder->getUser()->getId() === $user->getId() &&
-                        $user->getRole()->getName() === RoleType::ROLE_CUSTOMER
-                    ) ||
-                    $user->getRole()->getName() === RoleType::ROLE_MANAGER
+                        (
+                            $repairOrder->getUser()->getId() === $user->getId() &&
+                            $user->getRole()->getName() === RoleType::ROLE_CUSTOMER
+                        ) ||
+                        $user->getRole()->getName() === RoleType::ROLE_MANAGER
+                    )
 
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
@@ -163,17 +169,17 @@ class RepairOrderVoter implements VoterInterface
             case self::REOPEN:
                 if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_RESOLVED]) &&
                     (
-                        $repairOrder->getUser()->getId() === $user->getId() &&
-                        $user->getRole()->getName() === RoleType::ROLE_CUSTOMER
-                    ) ||
-                    $user->getRole()->getName() === RoleType::ROLE_MANAGER
+                        (
+                            $repairOrder->getUser()->getId() === $user->getId() &&
+                            $user->getRole()->getName() === RoleType::ROLE_CUSTOMER
+                        ) ||
+                        $user->getRole()->getName() === RoleType::ROLE_MANAGER
+                    )
 
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
-
-
         }
 
         return VoterInterface::ACCESS_DENIED;

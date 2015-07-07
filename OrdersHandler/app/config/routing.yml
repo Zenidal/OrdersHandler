@@ -66,6 +66,10 @@ repairorder_reopen:
     pattern:     /repair_orders/{id}/reopen
     defaults: { _controller: AppBundle:RepairOrder:reopen }
 
+repairorder_history:
+    pattern:     /repair_orders/{id}/history
+    defaults: { _controller: AppBundle:RepairOrder:history }
+
 profile:
     pattern:     /profile
     defaults: { _controller: AppBundle:Profile:index }

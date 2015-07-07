@@ -1,0 +1,29 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="repairorder">
+        <div class="container-fluid">
+            <legend>
+                History of order with id {{ entity.id }}
+            </legend>
+            {% if history is defined %}
+                <table class="history table">
+                    <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <th>Date</th>
+                        <th>Established status</th>
+                    </tr>
+                    {% for record in history %}
+                        <tr>
+                            <td>{{ record.getId() }}</td>
+                            <td>{{ record.date|date("m/d/Y") }}</td>
+                            <td>{{ record.getTextStatus() }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

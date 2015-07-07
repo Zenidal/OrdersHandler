@@ -71,7 +71,7 @@ class RepairOrderType extends AbstractType
         }
 
         $builder
-            ->add('description')
+            ->add('description', 'textarea')
             ->add('address')
             ->add('submit', 'submit')
             ->add('company', 'entity', [

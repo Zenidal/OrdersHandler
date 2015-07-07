@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\OrderHistory;
 use AppBundle\Form\Type\RoleType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -49,11 +50,17 @@ class RepairOrderController extends Controller
                 )
             );
         }
+        $history = new OrderHistory();
+        $history->setDate(new \DateTime("now"));
+        $history->setEstablishedStatus(RepairOrderType::STATUS_OPEN);
+        $history->setRepairOrder($entity);
+
         $entity->setStatus(RepairOrderType::STATUS_OPEN);
         $entity->setEngineer(null);
         $entity->setStartDate(null);
         $entity->setEndDate(null);
         $entity->setUser($user);
+        $entity->addOrderHistory($history);
 
         $form = $this->createForm($this->get('form.order.type'), $entity, array(
             'action' => $this->generateUrl('repairorder_new'),
@@ -63,6 +70,7 @@ class RepairOrderController extends Controller
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
+                $em->persist($history);
                 $em->persist($entity);
                 $em->flush();
 
@@ -110,11 +118,7 @@ class RepairOrderController extends Controller
         }
         return $this->render('AppBundle:RepairOrder:show.html.twig', array(
                 'entity' => $entity,
-                'isOpened' => ($entity->getStatus() === RepairOrderType::STATUS_OPEN || $entity->getStatus() === RepairOrderType::STATUS_REOPENED) ? true : false,
-                'isAssigned' => $entity->getStatus() === RepairOrderType::STATUS_ASSIGNED ? true : false,
-                'isStarted' => $entity->getStatus() === RepairOrderType::STATUS_IN_PROCESS ? true : false,
-                'isFinished' => $entity->getStatus() === RepairOrderType::STATUS_RESOLVED ? true : false,
-                'isReopened' => $entity->getStatus() === RepairOrderType::STATUS_REOPENED ? true : false,
+                'isReopened' => $entity->getStatus() === RepairOrderType::STATUS_REOPENED,
             )
         );
     }
@@ -314,7 +318,13 @@ class RepairOrderController extends Controller
                 )
             );
         }
+        $history = new OrderHistory();
+        $history->setDate(new \DateTime("now"));
+        $history->setEstablishedStatus(RepairOrderType::STATUS_ASSIGNED);
+        $history->setRepairOrder($repairOrder);
+        $em->persist($history);
 
+        $repairOrder->addOrderHistory($history);
         $repairOrder->setEngineer($engineer);
         $repairOrder->setStatus(RepairOrderType::STATUS_ASSIGNED);
         $em->flush();
@@ -350,7 +360,13 @@ class RepairOrderController extends Controller
                 )
             );
         }
+        $history = new OrderHistory();
+        $history->setDate(new \DateTime("now"));
+        $history->setEstablishedStatus(RepairOrderType::STATUS_IN_PROCESS);
+        $history->setRepairOrder($repairOrder);
+        $em->persist($history);
 
+        $repairOrder->addOrderHistory($history);
         $repairOrder->setStatus(RepairOrderType::STATUS_IN_PROCESS);
         $repairOrder->setStartDate(new \DateTime("now"));
         $em->flush();
@@ -387,7 +403,13 @@ class RepairOrderController extends Controller
                 )
             );
         }
+        $history = new OrderHistory();
+        $history->setDate(new \DateTime("now"));
+        $history->setEstablishedStatus(RepairOrderType::STATUS_RESOLVED);
+        $history->setRepairOrder($repairOrder);
+        $em->persist($history);
 
+        $repairOrder->addOrderHistory($history);
         $repairOrder->setStatus(RepairOrderType::STATUS_RESOLVED);
         $repairOrder->setEndDate(new \DateTime("now"));
         $em->flush();
@@ -425,6 +447,13 @@ class RepairOrderController extends Controller
             );
         }
 
+        $history = new OrderHistory();
+        $history->setDate(new \DateTime("now"));
+        $history->setEstablishedStatus(RepairOrderType::STATUS_CLOSED);
+        $history->setRepairOrder($repairOrder);
+        $em->persist($history);
+
+        $repairOrder->addOrderHistory($history);
         $repairOrder->setStatus(RepairOrderType::STATUS_CLOSED);
         $repairOrder->setComment(null);
         $em->flush();
@@ -466,15 +495,29 @@ class RepairOrderController extends Controller
                 'id' => $id
             )))
             ->setMethod('PUT')
-            ->add('comment', 'text')
-            ->add('submit', 'submit', array('label' => 'Reopen'))
+            ->add('comment', 'textarea')
+            ->add('reopen', 'submit', array('label' => 'Reopen'))
+            ->add('cancel', 'submit', array('label' => 'Cancel'))
             ->getForm();
+
         if ($request->isMethod('PUT')) {
             $reopenForm->handleRequest($request);
 
+            if($reopenForm->get("cancel")->isClicked()){
+                return $this->redirect('/repair_orders/'.$id);
+            }
+
             if ($reopenForm->isValid()) {
-                $repairOrder->setEngineer(null);
+                $history = new OrderHistory();
+                $history->setDate(new \DateTime("now"));
+                $history->setEstablishedStatus(RepairOrderType::STATUS_REOPENED);
+                $history->setRepairOrder($repairOrder);
+                $em->persist($history);
+
+                $history->setRepairOrder($repairOrder);
+                $repairOrder->addOrderHistory($history);
                 $repairOrder->setStatus(RepairOrderType::STATUS_REOPENED);
+                $repairOrder->setComment($reopenForm->get('comment')->getData());
                 $em->flush();
 
                 return $this->redirect($this->generateUrl('repairorder_show', array('id' => $id)));
@@ -490,6 +533,46 @@ class RepairOrderController extends Controller
         return $this->render('AppBundle:RepairOrder:reopen.html.twig', array(
                 'entity' => $repairOrder,
                 'reopenForm' => $reopenForm->createView()
+            )
+        );
+    }
+
+    public function historyAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:RepairOrder')->find($id);
+
+        if (!$entity) {
+            try {
+                throw $this->createNotFoundException('Unable to find RepairOrder entity.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ]
+                    )
+                );
+            }
+        }
+
+        try {
+            $this->denyAccessUnlessGranted('view', $entity, 'Access denied!');
+        } catch (AccessDeniedException $ex) {
+            return $this->render('default/index.html.twig', array(
+                    'errorMessages' => [
+                        $ex->getMessage()
+                    ]
+                )
+            );
+        }
+
+        $history = $entity->getOrderHistory();
+
+        return $this->render('AppBundle:RepairOrder:history.html.twig', array(
+                'entity' => $entity,
+                'history' => $history,
+                'isReopened' => $entity->getStatus() === RepairOrderType::STATUS_REOPENED,
             )
         );
     }

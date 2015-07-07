@@ -17,10 +17,6 @@ use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
- * @UniqueEntity(
- *      "username",
- *      message="Username is already exists."
- * )
  */
 class User implements UserInterface, \Serializable
 {
