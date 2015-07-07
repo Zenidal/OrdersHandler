@@ -4,8 +4,8 @@
     <div class="manager-companies-new">
         <div class="container-fluid">
             <legend>Place creation</legend>
-            <div class="manager-places-new-error">
-                {{ form_errors(form) }}
+            <div id="notifier">
+                {{ include('notifiers/notifier.html.twig') }}
             </div>
             <div class="manager-places-new-form">
                 {{ form_start(form) }}

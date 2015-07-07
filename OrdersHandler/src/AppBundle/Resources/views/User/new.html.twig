@@ -4,8 +4,8 @@
     <div class="manager-users-new">
         <div class="container-fluid">
             <legend>User creation</legend>
-            <div class="manager-users-new-error">
-                {{ form_errors(form) }}
+            <div id="notifier">
+                {{ include('notifiers/notifier.html.twig') }}
             </div>
             <div class="manager-users-new-form">
                 {{ form_start(form) }}

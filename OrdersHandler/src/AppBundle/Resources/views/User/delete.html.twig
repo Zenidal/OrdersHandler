@@ -6,8 +6,8 @@
             <legend>
                 Deletion user({{ user.username }})
             </legend>
-            <div class="manager-delete-user-error">
-                {{ form_errors(delete_form) }}
+            <div id="notifier">
+                {{ include('notifiers/notifier.html.twig') }}
             </div>
             <div class="manager-delete-user-form">
                 {{ form_start(delete_form) }}

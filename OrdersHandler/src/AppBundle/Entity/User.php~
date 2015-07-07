@@ -90,6 +90,11 @@ class User implements UserInterface, \Serializable
     private $isActive = true;
 
     /**
+     * @ORM\Column(type="text")
+     */
+    private $confirmationLink;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Company", inversedBy="users")
      * @ORM\JoinTable(name="users_companies")
      **/

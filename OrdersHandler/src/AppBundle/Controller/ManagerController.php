@@ -100,17 +100,24 @@ class ManagerController extends Controller
                 $user->setPassword($password);
 
                 $user->setRole($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role')->findRoleByName(RoleType::ROLE_CUSTOMER));
+                $user->setConfirmationLink($request->getHost().':'.$request->getPort().'/email_confirmation/'.md5(uniqid(null, true)));
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($user);
                 $em->flush();
 
-                return $this->redirectToRoute('manager');
+                return $this->redirectToRoute('register_success');
             } else {
+                $errors = $this->get('validator')->validate($form);
+                $errorMessages = [];
+                foreach ($errors as $error) {
+                    $errorMessages[] = $error->getMessage();
+                }
+
                 return $this->render(
                     'AppBundle:User:new.html.twig', array(
                         'form' => $form->createView(),
-                        'errors' => $errors = $this->get('validator')->validate($form)
+                        'errorMessages' => $errorMessages
                     )
                 );
             }
@@ -119,7 +126,7 @@ class ManagerController extends Controller
         return $this->render(
             'AppBundle:User:new.html.twig', array(
                 'form' => $form->createView(),
-                'errors' => null
+                'errorMessages' => null
             )
         );
     }
@@ -205,7 +212,7 @@ class ManagerController extends Controller
                 $em->remove($entity);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('manager'));
+                return $this->render('default/index.html.twig', [ 'successMessages' => ['User successfully deleted.']]);
             }
             return $this->render('AppBundle:User:delete.html.twig', [
                     'deleteForm' => $deleteForm->createView(),
@@ -261,19 +268,20 @@ class ManagerController extends Controller
             if ($editForm->isValid()) {
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('manager_users_show', array('id' => $id)));
+                return $this->render('default/index.html.twig', [ 'successMessages' => ['User successfully edited.']]);
             }
 
             return $this->render('AppBundle:User:edit.html.twig', array(
                     'user' => $entity,
-                    'edit_form' => $editForm->createView()
+                    'edit_form' => $editForm->createView(),
+                    'errorMessages' => $this->get('validator')->validate($editForm)
                 )
             );
         }
 
         return $this->render('AppBundle:User:edit.html.twig', array(
                 'user' => $entity,
-                'edit_form' => $editForm->createView()
+                'edit_form' => $editForm->createView(),
             )
         );
     }
@@ -292,12 +300,12 @@ class ManagerController extends Controller
                 $em->persist($place);
                 $em->flush();
 
-                return $this->redirectToRoute('manager_places');
+                return $this->render('default/index.html.twig', ['successMessages' => ['Place successfully created.']]);
             } else {
                 return $this->render(
                     'AppBundle:Place:new.html.twig', array(
                         'form' => $form->createView(),
-                        'errors' => $errors = $this->get('validator')->validate($form)
+                        'errorMessages' => $this->get('validator')->validate($form)
                     )
                 );
             }
@@ -305,8 +313,7 @@ class ManagerController extends Controller
 
         return $this->render(
             'AppBundle:Place:new.html.twig', array(
-                'form' => $form->createView(),
-                'errors' => null
+                'form' => $form->createView()
             )
         );
     }
@@ -383,11 +390,14 @@ class ManagerController extends Controller
                 $em->remove($entity);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('manager'));
+                return $this->render('default/index.html.twig', [
+                    'successMessages' => ['Place successfully deleted.']
+                ]);
             }
             return $this->render('AppBundle:Place:delete.html.twig', [
                     'deleteForm' => $deleteForm->createView(),
-                    'place' => $entity
+                    'place' => $entity,
+                    'errorMessages' => $this->get('validator')->validate($deleteForm)
                 ]
             );
         }
@@ -430,12 +440,15 @@ class ManagerController extends Controller
             if ($editForm->isValid()) {
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('manager_places_show', array('id' => $id)));
+                return $this->render('default/index.html.twig', [
+                    'successMessages' => 'Place successfully edited.'
+                ]);
             }
 
             return $this->render('AppBundle:Place:edit.html.twig', array(
                     'place' => $entity,
-                    'edit_form' => $editForm->createView()
+                    'edit_form' => $editForm->createView(),
+                    'errorMessages' => $this->get('validator')->validate($editForm)
                 )
             );
         }
@@ -461,12 +474,14 @@ class ManagerController extends Controller
                 $em->persist($company);
                 $em->flush();
 
-                return $this->redirectToRoute('manager_companies');
+                return $this->render('AppBundle:Manager:index.html.twig', [
+                    'successMessages' => 'Company successfully created.'
+                ]);
             } else {
                 return $this->render(
                     'AppBundle:Company:new.html.twig', array(
                         'form' => $form->createView(),
-                        'errors' => $errors = $this->get('validator')->validate($form)
+                        'errorMessages' => $this->get('validator')->validate($form)
                     )
                 );
             }
@@ -550,17 +565,22 @@ class ManagerController extends Controller
             $deleteForm->handleRequest($request);
             if ($deleteForm->isValid()) {
                 $users = $entity->getUsers();
-                foreach($users as $user){
+                foreach ($users as $user) {
                     $user->removeCompany($entity);
                 }
                 $em->remove($entity);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('manager_companies'));
+                return $this->render(
+                    'AppBundle:Manager:index.html.twig', array(
+                        'successMessages' => 'Company successfully deleted.'
+                    )
+                );
             }
             return $this->render('AppBundle:Company:delete.html.twig', [
                     'deleteForm' => $deleteForm->createView(),
-                    'company' => $entity
+                    'company' => $entity,
+                    'errorMessages' => $this->get('validator')->validate($deleteForm)
                 ]
             );
         }
@@ -603,12 +623,17 @@ class ManagerController extends Controller
             if ($editForm->isValid()) {
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('manager_companies_show', array('id' => $id)));
+                return $this->render(
+                    'AppBundle:Manager:index.html.twig', array(
+                        'successMessages' => 'Company successfully edited.'
+                    )
+                );
             }
 
             return $this->render('AppBundle:Company:edit.html.twig', array(
                     'company' => $entity,
-                    'edit_form' => $editForm->createView()
+                    'edit_form' => $editForm->createView(),
+                    'errorMessages' => $this->get('validator')->validate($editForm)
                 )
             );
         }

@@ -4,8 +4,8 @@
     <div class="manager-users-show">
         <div class="container-fluid">
             <legend>Alteration user({{ user.getUsername() }})</legend>
-            <div class="manager-users-show-error">
-                {{ form_errors(edit_form) }}
+            <div id="notifier">
+                {{ include('notifiers/notifier.html.twig') }}
             </div>
             <div class="manager-users-show-form">
                 {{ form_start(edit_form) }}

@@ -6,6 +6,9 @@
             <legend>
                 Manager page
             </legend>
+            <div id="notifier">
+                {{ include('notifiers/notifier.html.twig') }}
+            </div>
             <div class="manager-nav">
                 <ul class="nav nav-tabs">
                     {% if users is defined %}

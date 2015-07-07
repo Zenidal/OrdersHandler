@@ -4,16 +4,10 @@
     <div class="home">
         <div class="container-fluid">
             <div class="home">
-                <div class="home-error">
-                    {% if errorMessages is defined %}
-                        {% for error in errorMessages %}
-                            <div class="error text-danger">
-                                {{ error }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
                 <legend><h1>Homepage</h1></legend>
+                <div id="notifier">
+                    {{ include('notifiers/notifier.html.twig') }}
+                </div>
             </div>
         </div>
     </div>

@@ -37,6 +37,7 @@ class AccountController extends Controller
 
                 $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
                 $user->setPassword($password);
+                $user->setConfirmationLink($this->getRequest()->getHost().'/email_confirmation?id='.md5(uniqid(null, true)));
 
                 $user->setRole($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role')->findRoleByName(RoleType::ROLE_CUSTOMER));
 
@@ -44,7 +45,24 @@ class AccountController extends Controller
                 $em->persist($user);
                 $em->flush();
 
-                return $this->redirectToRoute('profile');
+                $message = \Swift_Message::newInstance()
+                    ->setSubject('Registration confirmation')
+                    ->setFrom('send@example.com')
+                    ->setTo('1ochka1994@mail.ru')
+                    ->setBody(
+                        $this->renderView(
+                            'Emails/registration.html.twig',
+                            [
+                                'firstName' => $user->getFirstName(),
+                                'surname' => $user->getSurname(),
+                                'confirmationLink' => $user->getConfirmationLink()
+                            ]
+                        ),
+                        'text/html'
+                    );
+                $this->get('mailer')->send($message);
+
+                return $this->redirectToRoute('register_success');
             } else {
                 $errors = $this->get('validator')->validate($form);
                 $messages = [];
@@ -54,17 +72,23 @@ class AccountController extends Controller
                 return $this->render(
                     'AppBundle:account:register.html.twig', array(
                         'form' => $form->createView(),
-                        'messages' => $messages
+                        'errorMessages' => $messages
                     )
                 );
             }
         }
 
         return $this->render(
-            'AppBundle:account:register.html.twig',
-            array(
+            'AppBundle:account:register.html.twig',[
                 'form' => $form->createView()
-            )
+            ]
+        );
+    }
+
+    public function registerSuccessAction()
+    {
+        return $this->render(
+            'AppBundle:account:registerSuccess.html.twig'
         );
     }
 }

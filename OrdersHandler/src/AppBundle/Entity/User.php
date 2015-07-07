@@ -90,6 +90,11 @@ class User implements UserInterface, \Serializable
     private $isActive = true;
 
     /**
+     * @ORM\Column(type="text")
+     */
+    private $confirmationLink;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Company", inversedBy="users")
      * @ORM\JoinTable(name="users_companies")
      **/
@@ -434,5 +439,28 @@ class User implements UserInterface, \Serializable
     public function getAssignedRepairOrders()
     {
         return $this->assignedRepairOrders;
+    }
+
+    /**
+     * Set confirmationLink
+     *
+     * @param string $confirmationLink
+     * @return User
+     */
+    public function setConfirmationLink($confirmationLink)
+    {
+        $this->confirmationLink = $confirmationLink;
+
+        return $this;
+    }
+
+    /**
+     * Get confirmationLink
+     *
+     * @return string 
+     */
+    public function getConfirmationLink()
+    {
+        return $this->confirmationLink;
     }
 }

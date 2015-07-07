@@ -4,8 +4,8 @@
     <div class="manager-places-show">
         <div class="container-fluid">
             <legend>Alteration place({{ place.getName() }})</legend>
-            <div class="manager-places-show-error">
-                {{ form_errors(edit_form) }}
+            <div id="notifier">
+                {{ include('notifiers/notifier.html.twig') }}
             </div>
             <div class="manager-places-show-form">
                 {{ form_start(edit_form) }}

@@ -4,15 +4,8 @@
         <div class="container-fluid">
             <h1>Registration</h1>
             <hr/>
-            <div class="register-error">
-                {% if messages is defined %}
-                    {% for message in messages %}
-                        <div class="error text-danger">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                    <hr>
-                {% endif %}
+            <div id="notifier">
+                {{ include('notifiers/notifier.html.twig') }}
             </div>
             <div class="register-form">
                 {{ form_start(form) }}

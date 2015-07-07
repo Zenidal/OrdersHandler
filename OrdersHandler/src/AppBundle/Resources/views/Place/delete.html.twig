@@ -6,8 +6,8 @@
             <legend>
                 Deletion place({{ place.name }})
             </legend>
-            <div class="manager-delete-place-error">
-                {{ form_errors(delete_form) }}
+            <div id="notifier">
+                {{ include('notifiers/notifier.html.twig') }}
             </div>
             <div class="manager-delete-place-form">
                 {{ form_start(delete_form) }}

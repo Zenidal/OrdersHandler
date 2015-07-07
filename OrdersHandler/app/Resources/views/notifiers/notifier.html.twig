@@ -1,0 +1,20 @@
+{% if errorMessages is defined %}
+    <div class="error">
+        {% for error in errorMessages %}
+            <div class="text-message text-danger">
+                {{ error }}
+            </div>
+        {% endfor %}
+    </div>
+    <hr>
+{% endif %}
+{% if successMessages is defined %}
+    <div class="success">
+        {% for success in successMessages %}
+            <div class="text-message text-success">
+                {{ success }}
+            </div>
+        {% endfor %}
+    </div>
+    <hr>
+{% endif %}
