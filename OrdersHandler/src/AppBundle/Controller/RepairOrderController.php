@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\OrderHistory;
 use AppBundle\Form\Type\RoleType;
+use Swift_Mailer;
+use Swift_Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\RepairOrder;
@@ -318,15 +320,9 @@ class RepairOrderController extends Controller
                 )
             );
         }
-        $history = new OrderHistory();
-        $history->setDate(new \DateTime("now"));
-        $history->setEstablishedStatus(RepairOrderType::STATUS_ASSIGNED);
-        $history->setRepairOrder($repairOrder);
-        $em->persist($history);
 
-        $repairOrder->addOrderHistory($history);
         $repairOrder->setEngineer($engineer);
-        $repairOrder->setStatus(RepairOrderType::STATUS_ASSIGNED);
+        $this->changeStatus($repairOrder, RepairOrderType::STATUS_ASSIGNED);
         $em->flush();
         return $this->redirectToRoute('repair_orders');
     }
@@ -360,14 +356,8 @@ class RepairOrderController extends Controller
                 )
             );
         }
-        $history = new OrderHistory();
-        $history->setDate(new \DateTime("now"));
-        $history->setEstablishedStatus(RepairOrderType::STATUS_IN_PROCESS);
-        $history->setRepairOrder($repairOrder);
-        $em->persist($history);
+        $this->changeStatus($repairOrder, RepairOrderType::STATUS_IN_PROCESS);
 
-        $repairOrder->addOrderHistory($history);
-        $repairOrder->setStatus(RepairOrderType::STATUS_IN_PROCESS);
         $repairOrder->setStartDate(new \DateTime("now"));
         $em->flush();
 
@@ -403,14 +393,7 @@ class RepairOrderController extends Controller
                 )
             );
         }
-        $history = new OrderHistory();
-        $history->setDate(new \DateTime("now"));
-        $history->setEstablishedStatus(RepairOrderType::STATUS_RESOLVED);
-        $history->setRepairOrder($repairOrder);
-        $em->persist($history);
-
-        $repairOrder->addOrderHistory($history);
-        $repairOrder->setStatus(RepairOrderType::STATUS_RESOLVED);
+        $this->changeStatus($repairOrder, RepairOrderType::STATUS_RESOLVED);
         $repairOrder->setEndDate(new \DateTime("now"));
         $em->flush();
 
@@ -446,15 +429,7 @@ class RepairOrderController extends Controller
                 )
             );
         }
-
-        $history = new OrderHistory();
-        $history->setDate(new \DateTime("now"));
-        $history->setEstablishedStatus(RepairOrderType::STATUS_CLOSED);
-        $history->setRepairOrder($repairOrder);
-        $em->persist($history);
-
-        $repairOrder->addOrderHistory($history);
-        $repairOrder->setStatus(RepairOrderType::STATUS_CLOSED);
+        $this->changeStatus($repairOrder, RepairOrderType::STATUS_CLOSED);
         $repairOrder->setComment(null);
         $em->flush();
 
@@ -508,15 +483,7 @@ class RepairOrderController extends Controller
             }
 
             if ($reopenForm->isValid()) {
-                $history = new OrderHistory();
-                $history->setDate(new \DateTime("now"));
-                $history->setEstablishedStatus(RepairOrderType::STATUS_REOPENED);
-                $history->setRepairOrder($repairOrder);
-                $em->persist($history);
-
-                $history->setRepairOrder($repairOrder);
-                $repairOrder->addOrderHistory($history);
-                $repairOrder->setStatus(RepairOrderType::STATUS_REOPENED);
+                $this->changeStatus($repairOrder, RepairOrderType::STATUS_REOPENED);
                 $repairOrder->setComment($reopenForm->get('comment')->getData());
                 $em->flush();
 
@@ -575,5 +542,41 @@ class RepairOrderController extends Controller
                 'isReopened' => $entity->getStatus() === RepairOrderType::STATUS_REOPENED,
             )
         );
+    }
+
+    private function changeStatus(RepairOrder $repairOrder, $status)
+    {
+        $history = new OrderHistory();
+        $history->setDate(new \DateTime("now"));
+        $history->setEstablishedStatus($status);
+        $history->setRepairOrder($repairOrder);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($history);
+
+        $history->setRepairOrder($repairOrder);
+        $repairOrder->addOrderHistory($history);
+        $repairOrder->setStatus($status);
+
+        $transport = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 587, 'tls');
+        $transport->setUsername('1ochka1994@gmail.com');
+        $transport->setPassword('sa375292884545');
+        $mailer = Swift_Mailer::newInstance($transport);
+        $message = Swift_Message::newInstance();
+        $message->setSubject('Order status changed');
+        $message->setFrom(['1ochka1994@gmail.com' => 'Alexandr']);
+        $message->setTo([
+            $repairOrder->getUser()->getEmail(),
+            $repairOrder->getEngineer()->getEmail()
+        ]);
+        $message->setBody(
+            $this->renderView(
+                'Emails/notifications.html.twig',
+                [
+                    'order' => $repairOrder
+                ]
+            ),
+            'text/html'
+        );
+        $mailer->send($message);
     }
 }
