@@ -564,10 +564,6 @@ class RepairOrderController extends Controller
         $message = Swift_Message::newInstance();
         $message->setSubject('Order status changed');
         $message->setFrom(['1ochka1994@gmail.com' => 'Alexandr']);
-        $message->setTo([
-            $repairOrder->getUser()->getEmail(),
-            $repairOrder->getEngineer()->getEmail()
-        ]);
         $message->setBody(
             $this->renderView(
                 'Emails/notifications.html.twig',
@@ -576,6 +572,81 @@ class RepairOrderController extends Controller
                 ]
             ),
             'text/html'
+        );
+
+        $mails = [];
+        switch($status){
+            case 1:
+                $repository = $this->getDoctrine()->getRepository('AppBundle:User');
+                $managerRole =  $this->getDoctrine()->getRepository('AppBundle:Role')->findOneBy(
+                    [
+                        'name' => RoleType::ROLE_MANAGER
+                    ]
+                );
+                $managers = $repository->findBy(
+                    array('role' => $managerRole->getId())
+                );
+                foreach($managers as $manager){
+                    $mails[] = $manager->getEmail();
+                }
+                break;
+            case 2:
+                $mails[] = $repairOrder->getEngineer()->getEmail();
+                break;
+            case 3:
+                $mails[] = $repairOrder->getUser()->getEmail();
+                break;
+            case 4:
+                $repository = $this->getDoctrine()->getRepository('AppBundle:User');
+                $managerRole =  $this->getDoctrine()->getRepository('AppBundle:Role')->findOneBy(
+                    [
+                        'name' => RoleType::ROLE_MANAGER
+                    ]
+                );
+                $managers = $repository->findBy(
+                    array('role' => $managerRole->getId())
+                );
+                foreach($managers as $manager){
+                    $mails[] = $manager->getEmail();
+                }
+                $mails[] = $repairOrder->getUser()->getEmail();
+                break;
+            case 5:
+                $repository = $this->getDoctrine()->getRepository('AppBundle:User');
+                $managerRole =  $this->getDoctrine()->getRepository('AppBundle:Role')->findOneBy(
+                    [
+                        'name' => RoleType::ROLE_MANAGER
+                    ]
+                );
+                $managers = $repository->findBy(
+                    array('role' => $managerRole->getId())
+                );
+                $mails = [];
+                foreach($managers as $manager){
+                    $mails[] = $manager->getEmail();
+                }
+                $mails[] = $repairOrder->getUser()->getEmail();
+                break;
+            case 6:
+                $repository = $this->getDoctrine()->getRepository('AppBundle:User');
+                $managerRole =  $this->getDoctrine()->getRepository('AppBundle:Role')->findOneBy(
+                    [
+                        'name' => RoleType::ROLE_MANAGER
+                    ]
+                );
+                $managers = $repository->findBy(
+                    array('role' => $managerRole->getId())
+                );
+                $mails = [];
+                foreach($managers as $manager){
+                    $mails[] = $manager->getEmail();
+                }
+                $mails[] = $repairOrder->getUser()->getEmail();
+                $mails[] = $repairOrder->getEngineer()->getEmail();
+                break;
+        }
+        $message->setTo(
+            $mails
         );
         $mailer->send($message);
     }
