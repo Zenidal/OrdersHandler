@@ -20,6 +20,11 @@ security:
             security: false
             anonymous: ~
 
+        email_confirmation:
+            pattern: ^/email_confirmation/.*$
+            security: false
+            anonymous: ~
+
         login_firewall:
             pattern:   ^/login$
             anonymous: ~
