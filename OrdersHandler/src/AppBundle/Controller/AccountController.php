@@ -115,6 +115,8 @@ class AccountController extends Controller
         }
 
         $user->setIsActive(true);
+        $em = $this->getDoctrine()->getManager();
+        $em->flush();
 
         return $this->render('AppBundle:account:registerSuccess.html.twig', array(
                 'isConfirmed' => true
