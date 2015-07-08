@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Form\Type\RoleType;
+use Swift_Mailer;
+use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use AppBundle\Form\Type\RegistrationType;
@@ -10,6 +12,8 @@ use AppBundle\Form\Model\Registration;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
@@ -37,7 +41,7 @@ class AccountController extends Controller
 
                 $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
                 $user->setPassword($password);
-                $user->setConfirmationLink($this->getRequest()->getHost().'/email_confirmation?id='.md5(uniqid(null, true)));
+                $user->setConfirmationLink($request->getSchemeAndHttpHost().'/email_confirmation/'.md5(uniqid(null, true)));
 
                 $user->setRole($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role')->findRoleByName(RoleType::ROLE_CUSTOMER));
 
@@ -45,24 +49,29 @@ class AccountController extends Controller
                 $em->persist($user);
                 $em->flush();
 
-                $message = \Swift_Message::newInstance()
-                    ->setSubject('Registration confirmation')
-                    ->setFrom('send@example.com')
-                    ->setTo('1ochka1994@mail.ru')
-                    ->setBody(
-                        $this->renderView(
+                $transport = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 587, 'tls');
+                $transport->setUsername('1ochka1994@gmail.com');
+                $transport->setPassword('sa375292884545');
+                $mailer = Swift_Mailer::newInstance($transport);
+                $message = Swift_Message::newInstance();
+                $message->setSubject('Registration confirmation');
+                $message->setFrom(array('1ochka1994@gmail.com' => 'Alexandr'));
+                $message->setTo(array($user->getEmail()));
+                $message->setBody(
+                    $this->renderView(
                             'Emails/registration.html.twig',
                             [
                                 'firstName' => $user->getFirstName(),
                                 'surname' => $user->getSurname(),
+                                'username' => $user->getUsername(),
                                 'confirmationLink' => $user->getConfirmationLink()
                             ]
                         ),
                         'text/html'
                     );
-                $this->get('mailer')->send($message);
+                $mailer->send($message);
 
-                return $this->redirectToRoute('register_success');
+                return $this->render('AppBundle:account:registerSuccess.html.twig');
             } else {
                 $errors = $this->get('validator')->validate($form);
                 $messages = [];
@@ -85,10 +94,31 @@ class AccountController extends Controller
         );
     }
 
-    public function registerSuccessAction()
+    public function emailConfirmationAction(Request $request)
     {
-        return $this->render(
-            'AppBundle:account:registerSuccess.html.twig'
+        $repository = $this->getDoctrine()->getRepository('AppBundle:User');
+        $user = $repository->findOneBy(
+            array('confirmationLink' => $request->getUri())
+        );
+        if (!$user) {
+            try {
+                throw $this->createNotFoundException('This link is invalid.');
+            } catch (NotFoundHttpException $ex) {
+                return $this->render('default/index.html.twig', array(
+                        'errorMessages' => [
+                            $ex->getMessage()
+                        ],
+                    )
+                );
+            }
+
+        }
+
+        $user->setIsActive(true);
+
+        return $this->render('AppBundle:account:registerSuccess.html.twig', array(
+                'isConfirmed' => true
+            )
         );
     }
 }

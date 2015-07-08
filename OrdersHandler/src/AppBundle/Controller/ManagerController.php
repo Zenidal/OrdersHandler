@@ -8,6 +8,8 @@ use AppBundle\Form\Type\PlaceType;
 use AppBundle\Form\Type\CompanyType;
 use AppBundle\Form\Type\RoleType;
 use AppBundle\Form\Type\UserAlterationType;
+use Swift_Mailer;
+use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Form\Type\RegistrationType;
 use AppBundle\Form\Model\Registration;
@@ -73,61 +75,6 @@ class ManagerController extends Controller
         return $this->render('default/index.html.twig', [
                 'errorMessages' => ['Access denied']
             ]
-        );
-    }
-
-    public function usersCreateManagerAction(Request $request)
-    {
-        $registration = new Registration();
-        $form = $this->createForm(new RegistrationType(), $registration, array(
-            'action' => $this->generateUrl('manager_users_create'),
-        ));
-
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $registration = $form->getData();
-
-                /** @var User $user */
-                $user = $registration->getUser();
-
-                /** @var EncoderFactory $factory */
-                $factory = $this->get('security.encoder_factory');
-                /** @var PasswordEncoderInterface $encoder */
-                $encoder = $factory->getEncoder($user);
-
-                $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
-                $user->setPassword($password);
-
-                $user->setRole($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role')->findRoleByName(RoleType::ROLE_CUSTOMER));
-                $user->setConfirmationLink($request->getHost().':'.$request->getPort().'/email_confirmation/'.md5(uniqid(null, true)));
-
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $em->flush();
-
-                return $this->redirectToRoute('register_success');
-            } else {
-                $errors = $this->get('validator')->validate($form);
-                $errorMessages = [];
-                foreach ($errors as $error) {
-                    $errorMessages[] = $error->getMessage();
-                }
-
-                return $this->render(
-                    'AppBundle:User:new.html.twig', array(
-                        'form' => $form->createView(),
-                        'errorMessages' => $errorMessages
-                    )
-                );
-            }
-        }
-
-        return $this->render(
-            'AppBundle:User:new.html.twig', array(
-                'form' => $form->createView(),
-                'errorMessages' => null
-            )
         );
     }
 

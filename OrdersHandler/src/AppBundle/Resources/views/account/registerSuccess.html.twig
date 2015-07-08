@@ -6,7 +6,11 @@
             <legend>
                 Registration successful
             </legend>
-            To confirm your e-mail, check mail.
+            {% if isConfirmed is defined %}
+                Your mail successfully confirmed.
+            {% else %}
+                To confirm your e-mail, check mail.
+            {% endif %}
         </div>
     </div>
 {% endblock %}

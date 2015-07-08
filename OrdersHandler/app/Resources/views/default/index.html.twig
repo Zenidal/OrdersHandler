@@ -8,6 +8,9 @@
                 <div id="notifier">
                     {{ include('notifiers/notifier.html.twig') }}
                 </div>
+                {% if url is defined %}
+                    {{ url }}
+                {% endif %}
             </div>
         </div>
     </div>
