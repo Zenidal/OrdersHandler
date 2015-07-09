@@ -30,10 +30,11 @@ class ManagerController extends Controller
                 'users' => $users
             ]);
         }
-        return $this->render('default/index.html.twig', [
-                'errorMessages' => ['Access denied']
-            ]
+        $this->addFlash(
+            'notice',
+            'Access denied'
         );
+        return $this->redirectToRoute('default');
     }
 
     public function usersManagerAction()
@@ -44,10 +45,11 @@ class ManagerController extends Controller
                 'users' => $users
             ]);
         }
-        return $this->render('default/index.html.twig', [
-                'errorMessages' => ['Access denied']
-            ]
+        $this->addFlash(
+            'notice',
+            'Access denied'
         );
+        return $this->redirectToRoute('default');
     }
 
     public function companiesManagerAction()
@@ -58,10 +60,11 @@ class ManagerController extends Controller
                 'companies' => $companies
             ]);
         }
-        return $this->render('default/index.html.twig', [
-                'errorMessages' => ['Access denied']
-            ]
+        $this->addFlash(
+            'notice',
+            'Access denied'
         );
+        return $this->redirectToRoute('default');
     }
 
     public function placesManagerAction()
@@ -72,10 +75,11 @@ class ManagerController extends Controller
                 'places' => $places
             ]);
         }
-        return $this->render('default/index.html.twig', [
-                'errorMessages' => ['Access denied']
-            ]
+        $this->addFlash(
+            'notice',
+            'Access denied'
         );
+        return $this->redirectToRoute('default');
     }
 
     public function usersShowManagerAction($id)
@@ -88,12 +92,11 @@ class ManagerController extends Controller
             try {
                 throw $this->createNotFoundException('Unable to find User entity.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ]
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }
@@ -113,23 +116,18 @@ class ManagerController extends Controller
             try {
                 throw $this->createNotFoundException('Unable to find User entity.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ]
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }
 
         if ($entity->getRole()->getName() === RoleType::ROLE_MANAGER || $entity->getId() === $this->getUser()->getId()) {
-            return $this->render('default/index.html.twig', array(
-                    'errorMessages' => [
-                        'Access denied to delete this user.'
-                    ]
-                )
-            );
+            $this->addFlash('notice', 'Access denied to delete this user.');
+            return $this->redirectToRoute('default');
         }
 
         $deleteForm = $this->createFormBuilder()
@@ -145,12 +143,11 @@ class ManagerController extends Controller
                 try {
                     throw $this->createNotFoundException('Unable to find User entity.');
                 } catch (NotFoundHttpException $ex) {
-                    return $this->render('default/index.html.twig', array(
-                            'errorMessages' => [
-                                $ex->getMessage()
-                            ]
-                        )
+                    $this->addFlash(
+                        'notice',
+                        $ex->getMessage()
                     );
+                    return $this->redirectToRoute('default');
                 }
             }
 
@@ -158,8 +155,11 @@ class ManagerController extends Controller
             if ($deleteForm->isValid()) {
                 $em->remove($entity);
                 $em->flush();
-
-                return $this->render('default/index.html.twig', [ 'successMessages' => ['User successfully deleted.']]);
+                $this->addFlash(
+                    'notice',
+                    'User successfully deleted.'
+                );
+                return $this->redirectToRoute('default');
             }
             return $this->render('AppBundle:User:delete.html.twig', [
                     'deleteForm' => $deleteForm->createView(),
@@ -185,23 +185,21 @@ class ManagerController extends Controller
             try {
                 throw $this->createNotFoundException('Unable to find User entity.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ]
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }
 
         if ($entity->getRole()->getName() === RoleType::ROLE_MANAGER || $entity->getId() === $this->getUser()->getId()) {
-            return $this->render('default/index.html.twig', array(
-                    'errorMessages' => [
-                        'Access denied to edit this user.'
-                    ]
-                )
+            $this->addFlash(
+                'notice',
+                'Access denied to edit this user.'
             );
+            return $this->redirectToRoute('default');
         }
 
         $editForm = $this->createForm(new UserAlterationType(), $entity, array(
@@ -214,8 +212,11 @@ class ManagerController extends Controller
 
             if ($editForm->isValid()) {
                 $em->flush();
-
-                return $this->render('default/index.html.twig', [ 'successMessages' => ['User successfully edited.']]);
+                $this->addFlash(
+                    'notice',
+                    'User successfully edited.'
+                );
+                return $this->redirectToRoute('default');
             }
 
             return $this->render('AppBundle:User:edit.html.twig', array(
@@ -246,8 +247,11 @@ class ManagerController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($place);
                 $em->flush();
-
-                return $this->render('default/index.html.twig', ['successMessages' => ['Place successfully created.']]);
+                $this->addFlash(
+                    'notice',
+                    'Place successfully created.'
+                );
+                return $this->redirectToRoute('default');
             } else {
                 return $this->render(
                     'AppBundle:Place:new.html.twig', array(
@@ -275,12 +279,11 @@ class ManagerController extends Controller
             try {
                 throw $this->createNotFoundException('Unable to find Place entity.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ]
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }
@@ -300,12 +303,11 @@ class ManagerController extends Controller
             try {
                 throw $this->createNotFoundException('Unable to find Place entity.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ]
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }
@@ -323,12 +325,11 @@ class ManagerController extends Controller
                 try {
                     throw $this->createNotFoundException('Unable to find Place entity.');
                 } catch (NotFoundHttpException $ex) {
-                    return $this->render('default/index.html.twig', array(
-                            'errorMessages' => [
-                                $ex->getMessage()
-                            ]
-                        )
+                    $this->addFlash(
+                        'notice',
+                        $ex->getMessage()
                     );
+                    return $this->redirectToRoute('default');
                 }
             }
 
@@ -336,10 +337,11 @@ class ManagerController extends Controller
             if ($deleteForm->isValid()) {
                 $em->remove($entity);
                 $em->flush();
-
-                return $this->render('default/index.html.twig', [
-                    'successMessages' => ['Place successfully deleted.']
-                ]);
+                $this->addFlash(
+                    'notice',
+                    'Place successfully deleted.'
+                );
+                return $this->redirectToRoute('default');
             }
             return $this->render('AppBundle:Place:delete.html.twig', [
                     'deleteForm' => $deleteForm->createView(),
@@ -366,12 +368,11 @@ class ManagerController extends Controller
             try {
                 throw $this->createNotFoundException('Unable to find Place entity.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ]
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }
@@ -386,10 +387,11 @@ class ManagerController extends Controller
 
             if ($editForm->isValid()) {
                 $em->flush();
-
-                return $this->render('default/index.html.twig', [
-                    'successMessages' => 'Place successfully edited.'
-                ]);
+                $this->addFlash(
+                    'notice',
+                    'Place successfully edited.'
+                );
+                return $this->redirectToRoute('default');
             }
 
             return $this->render('AppBundle:Place:edit.html.twig', array(
@@ -420,10 +422,11 @@ class ManagerController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($company);
                 $em->flush();
-
-                return $this->render('AppBundle:Manager:index.html.twig', [
-                    'successMessages' => 'Company successfully created.'
-                ]);
+                $this->addFlash(
+                    'notice',
+                    'Company successfully created.'
+                );
+                return $this->redirectToRoute('default');
             } else {
                 return $this->render(
                     'AppBundle:Company:new.html.twig', array(
@@ -452,12 +455,11 @@ class ManagerController extends Controller
             try {
                 throw $this->createNotFoundException('Unable to find Company entity.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ]
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }
@@ -477,12 +479,11 @@ class ManagerController extends Controller
             try {
                 throw $this->createNotFoundException('Unable to find Company entity.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ]
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }
@@ -500,12 +501,11 @@ class ManagerController extends Controller
                 try {
                     throw $this->createNotFoundException('Unable to find Company entity.');
                 } catch (NotFoundHttpException $ex) {
-                    return $this->render('default/index.html.twig', array(
-                            'errorMessages' => [
-                                $ex->getMessage()
-                            ]
-                        )
+                    $this->addFlash(
+                        'notice',
+                        $ex->getMessage()
                     );
+                    return $this->redirectToRoute('default');
                 }
             }
 
@@ -517,12 +517,11 @@ class ManagerController extends Controller
                 }
                 $em->remove($entity);
                 $em->flush();
-
-                return $this->render(
-                    'AppBundle:Manager:index.html.twig', array(
-                        'successMessages' => 'Company successfully deleted.'
-                    )
+                $this->addFlash(
+                    'notice',
+                    'Company successfully deleted.'
                 );
+                return $this->redirectToRoute('default');
             }
             return $this->render('AppBundle:Company:delete.html.twig', [
                     'deleteForm' => $deleteForm->createView(),
@@ -549,12 +548,11 @@ class ManagerController extends Controller
             try {
                 throw $this->createNotFoundException('Unable to find Company entity.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ]
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }
@@ -569,12 +567,11 @@ class ManagerController extends Controller
 
             if ($editForm->isValid()) {
                 $em->flush();
-
-                return $this->render(
-                    'AppBundle:Manager:index.html.twig', array(
-                        'successMessages' => 'Company successfully edited.'
-                    )
+                $this->addFlash(
+                    'notice',
+                    'Company successfully edited.'
                 );
+                return $this->redirectToRoute('default');
             }
 
             return $this->render('AppBundle:Company:edit.html.twig', array(

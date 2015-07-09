@@ -12,6 +12,12 @@
                     <a class="glyphicon glyphicon-plus" href="{{ path('repairorder_new') }}"></a> Repair orders
                 {% endif %}
             </legend>
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+                <div class="flash-notice text-warning">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+            <hr>
             <table class="records_list table table-hover table-striped">
                 <thead>
                 <tr>

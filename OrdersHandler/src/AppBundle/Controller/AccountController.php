@@ -104,12 +104,11 @@ class AccountController extends Controller
             try {
                 throw $this->createNotFoundException('This link is invalid.');
             } catch (NotFoundHttpException $ex) {
-                return $this->render('default/index.html.twig', array(
-                        'errorMessages' => [
-                            $ex->getMessage()
-                        ],
-                    )
+                $this->addFlash(
+                    'notice',
+                    $ex->getMessage()
                 );
+                return $this->redirectToRoute('default');
             }
 
         }

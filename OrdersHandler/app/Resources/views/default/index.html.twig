@@ -5,6 +5,12 @@
         <div class="container-fluid">
             <div class="home">
                 <legend><h1>Homepage</h1></legend>
+                {% for flashMessage in app.session.flashbag.get('notice') %}
+                    <div class="flash-notice text-warning">
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
+                <hr>
                 <div id="notifier">
                     {{ include('notifiers/notifier.html.twig') }}
                 </div>
