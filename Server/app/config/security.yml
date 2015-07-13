@@ -1,0 +1,60 @@
+security:
+    role_hierarchy:
+        ROLE_MANAGER: ROLE_USER
+        ROLE_ENGINEER: ROLE_USER
+        ROLE_CUSTOMER: ROLE_USER
+
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    providers:
+        our_db_provider:
+            entity:
+                class: AppBundle:User
+
+    firewalls:
+
+        public:
+            pattern:  ^/(home|register|registerSuccess|companies)$
+            security: false
+            anonymous: ~
+
+        email_confirmation:
+            pattern: ^/email_confirmation/.*$
+            security: false
+            anonymous: ~
+
+        login_firewall:
+            pattern:   ^/login$
+            anonymous: ~
+        secured_area:
+            pattern:    ^/
+            form_login: ~
+            logout:
+                path:   /logout
+                target: /home
+
+        default:
+            pattern:    ^/
+            anonymous: ~
+            http_basic: ~
+            provider: our_db_provider
+            form_login:
+                login_path: /login
+                check_path: /login_check
+                remember_me: true
+            remember_me:
+                key:      "%secret%"
+                lifetime: 604800 # 1 week in seconds
+                path:     /
+                domain:   ~
+
+        dev:
+            pattern: ^/(_(profiler|wdt|error)|css|images|js)/
+            security: false
+
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/manager, roles: ROLE_MANAGER }
