@@ -1,7 +1,8 @@
 <?php
 
 namespace AppBundle\Controller;
-header("Access-Control-Allow-Origin: *");
+
+require_once('headers/headers.php');
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;

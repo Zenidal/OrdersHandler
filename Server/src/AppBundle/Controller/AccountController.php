@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+require_once('headers/clientPath.php');
+
 use AppBundle\Form\Type\RoleType;
 use Swift_Mailer;
 use Swift_Message;
@@ -104,11 +106,7 @@ class AccountController extends Controller
             try {
                 throw $this->createNotFoundException('This link is invalid.');
             } catch (NotFoundHttpException $ex) {
-                $this->addFlash(
-                    'notice',
-                    $ex->getMessage()
-                );
-                return $this->redirectToRoute('default');
+                return $this->generateUrl(CLIENT_PATH."/registration_success");
             }
 
         }

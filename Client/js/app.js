@@ -18,9 +18,17 @@ ordersHandlerApp.config(['$routeProvider', '$provide', '$resourceProvider', func
             templateUrl: 'html/views/home.html',
             controller: 'HomeCtrl'
         })
+        .when('/orders', {
+            templateUrl: 'html/views/orders.html',
+            controller: 'OrdersCtrl'
+        })
         .when('/register', {
             templateUrl: 'html/views/registration.html',
             controller: 'RegistrationCtrl'
+        })
+        .when('/registrationResult', {
+            templateUrl: 'html/views/registrationResult.html',
+            controller: 'RegistrationResultCtrl'
         })
         .otherwise(
         {
@@ -28,6 +36,6 @@ ordersHandlerApp.config(['$routeProvider', '$provide', '$resourceProvider', func
         });
 }]);
 
-ordersHandlerApp.run(['$rootScope', function($rootScope){
-    $rootScope.serverPath = 'http://127.0.0.1:8000';
+ordersHandlerApp.run(['$rootScope', function ($rootScope) {
+    $rootScope.serverPath = 'http://horder.server.loc:666';
 }]);

@@ -12,7 +12,7 @@ account_register:
 
 email_confirmation:
     pattern:     /email_confirmation/{id}
-    defaults: { _controller: AppBundle:Account:emailConfirmation }
+    defaults: { _controller: AppBundle:User:emailConfirmation }
 
 login:
     pattern:   /login
@@ -25,6 +25,10 @@ login_check:
 companies:
     pattern: /companies
     defaults:  { _controller: AppBundle:Company:index }
+
+users:
+    pattern: /users
+    defaults:  { _controller: AppBundle:User:index }
 
 
 repair_orders:

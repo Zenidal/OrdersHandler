@@ -16,7 +16,7 @@ security:
     firewalls:
 
         public:
-            pattern:  ^/(home|register|registerSuccess|companies)$
+            pattern:  ^/(home|register|registerSuccess|companies|users)$
             security: false
             anonymous: ~
 
