@@ -28,8 +28,8 @@ class UserController extends Controller
             $user->setFirstName($data['firstName']);
             $user->setSurname($data['surname']);
             $user->setEmail($data['email']);
+            $user->setConfirmationLink($data['confirmationLink']);
             $user->setRole($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role')->findRoleByName(RoleType::ROLE_CUSTOMER));
-            $user->setConfirmationLink($request->getSchemeAndHttpHost() . '/email_confirmation/' . md5(uniqid(null, true)));
             $user->setIsActive(false);
             foreach($data['companies'] as $company){
                 $id = $company['id'];
@@ -81,23 +81,53 @@ class UserController extends Controller
 
     public function emailConfirmationAction(Request $request)
     {
-        $repository = $this->getDoctrine()->getRepository('AppBundle:User');
-        $user = $repository->findOneBy(
-            array('confirmationLink' => $request->getUri())
-        );
-        if (!$user || $user->getIsActive()) {
-            try {
-                throw $this->createNotFoundException('This link is invalid.');
-            } catch (NotFoundHttpException $ex) {
-                return $this->redirect(CLIENT_PATH."/#/registrationResult?errorMessage=".$ex->getMessage());
+        if($request->isMethod('POST')){
+            $response = new Response();
+            $data = json_decode($request->getContent(), true);
+            $repository = $this->getDoctrine()->getRepository('AppBundle:User');
+            $user = $repository->findOneBy(
+                array('confirmationLink' => $data['confirmationLink'])
+            );
+            if (!$user || $user->getIsActive()) {
+                try {
+                    throw $this->createNotFoundException('This link is invalid.');
+                } catch (NotFoundHttpException $ex) {
+                    return $response->setContent(json_encode(['errorMessage' => $ex->getMessage()]), 200);
+                }
+
             }
 
+            $user->setIsActive(true);
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+
+            return $response->setContent(json_encode(['message' => 'Account was successfully confirmed .']), 200);
         }
+        if($request->isMethod('OPTIONS')){
+            return new Response('', 200);
+        }
+        if($request->isMethod('GET')){
+            $response = new Response();
+            $repository = $this->getDoctrine()->getRepository('AppBundle:User');
+            $link = $request->get('confirmationLink');
+            $user = $repository->findOneBy(
+                array('confirmationLink' => $request->get('confirmationLink'))
+            );
+            if (!$user || $user->getIsActive()) {
+                try {
+                    throw $this->createNotFoundException('This link is invalid.');
+                } catch (NotFoundHttpException $ex) {
+                    return $response->setContent(json_encode(['errorMessage' => $ex->getMessage()]), 200);
+                }
 
-        $user->setIsActive(true);
-        $em = $this->getDoctrine()->getManager();
-        $em->flush();
+            }
 
-        return $this->redirect(CLIENT_PATH."/#/registrationResult");
+            $user->setIsActive(true);
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+
+            return $response->setContent(json_encode(['message' => 'Account was successfully confirmed .']), 200);
+        }
+        return new Response('', 404);
     }
 }

@@ -42,7 +42,7 @@ class OrderHistory
      */
     public function getTextStatus()
     {
-        return RepairOrderType::getStatusByValue($this->status);
+        return RepairOrderType::getStatusByValue($this->establishedStatus);
     }
 
     /**

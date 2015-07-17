@@ -1,4 +1,4 @@
-var ordersHandlerApp = angular.module('ordersHandlerApp', ['ngRoute', 'ngResource', 'ordersHandlerControllers']);
+var ordersHandlerApp = angular.module('ordersHandlerApp', ['ngRoute', 'ngResource', 'ordersHandlerControllers', "angular-uuid"]);
 
 var ordersHandlerControllers = angular.module('ordersHandlerControllers', []);
 
@@ -26,7 +26,7 @@ ordersHandlerApp.config(['$routeProvider', '$provide', '$resourceProvider', func
             templateUrl: 'html/views/registration.html',
             controller: 'RegistrationCtrl'
         })
-        .when('/registrationResult', {
+        .when('/registrationResult/:id', {
             templateUrl: 'html/views/registrationResult.html',
             controller: 'RegistrationResultCtrl'
         })

@@ -16,12 +16,7 @@ security:
     firewalls:
 
         public:
-            pattern:  ^/(home|register|registerSuccess|companies|users)$
-            security: false
-            anonymous: ~
-
-        email_confirmation:
-            pattern: ^/email_confirmation/.*$
+            pattern:  ^/(home|register|registerSuccess|companies|users|email_confirmation)$
             security: false
             anonymous: ~
 

@@ -1,5 +1,5 @@
-ordersHandlerControllers.controller('RegistrationCtrl', ['$scope', '$http', 'Companies', 'Users',
-    function ($scope, $http, Companies, Users) {
+ordersHandlerControllers.controller('RegistrationCtrl', ['$scope', '$http', '$location', 'Companies', 'Users', "uuid",
+    function ($scope, $http, $location, Companies, Users, uuid) {
         $scope.registrationCompanies = Companies.query();
         $scope.register = register;
 
@@ -15,6 +15,7 @@ ordersHandlerControllers.controller('RegistrationCtrl', ['$scope', '$http', 'Com
                 User.surname = $scope.user.surname;
                 User.email = $scope.user.email;
                 User.companies = $scope.user.companies;
+                User.confirmationLink = $location.protocol() + '://' + location.host + '/#/registrationResult/' + uuid.v4();
                 User.$save(
                     function (data) {
                         if(data.errorMessage !== null){

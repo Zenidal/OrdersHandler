@@ -11,7 +11,7 @@ account_register:
     defaults: { _controller: AppBundle:Account:register }
 
 email_confirmation:
-    pattern:     /email_confirmation/{id}
+    pattern:     /email_confirmation
     defaults: { _controller: AppBundle:User:emailConfirmation }
 
 login:

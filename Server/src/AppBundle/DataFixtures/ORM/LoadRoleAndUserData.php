@@ -23,7 +23,9 @@ class LoadRoleAndUserData implements FixtureInterface
                     'salt' => '07134d87462ae3b43a1aac5b6b232739',
                     'first_name' => 'Alexandr',
                     'surname' => 'Miskevich',
-                    'email' => '1ochka1994@gmail.com'
+                    'email' => '1ochka1994@gmail.com',
+                    'confirmationLink' => '',
+                    'isActive' => true
                 ]
             ]
         ],
@@ -52,6 +54,8 @@ class LoadRoleAndUserData implements FixtureInterface
                 $newUser->setSurname($user['surname']);
                 $newUser->setEmail($user['email']);
                 $newUser->setRole($newRole);
+                $newUser->setConfirmationLink($user['confirmationLink']);
+                $newUser->setIsActive($user['isActive']);
                 $manager->persist($newUser);
             }
 
