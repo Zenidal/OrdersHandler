@@ -26,6 +26,14 @@ ordersHandlerApp.config(['$routeProvider', '$provide', '$resourceProvider', func
             templateUrl: 'html/views/order.html',
             controller: 'OrderReviewCtrl'
         })
+        .when('/orders/:id/delete', {
+            templateUrl: 'html/views/orderDelete.html',
+            controller: 'OrderDeleteCtrl'
+        })
+        .when('/orders/:id/edit', {
+            templateUrl: 'html/views/orderEdit.html',
+            controller: 'OrderEditCtrl'
+        })
         .when('/register', {
             templateUrl: 'html/views/registration.html',
             controller: 'RegistrationCtrl'
