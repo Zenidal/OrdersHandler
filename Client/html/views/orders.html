@@ -2,21 +2,37 @@
     <div class="orders">
         <h1>Orders</h1>
         <hr>
-        <table class="table table-hover">
-            <thead>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
                 <th>ID</th>
-                <th>User ID</th>
-                <th>Company ID</th>
-                <th>Place ID</th>
+                <th>User</th>
+                <th>Company</th>
+                <th>Place</th>
                 <th>Description</th>
                 <th>Address</th>
                 <th>Status</th>
-            </thead>
-            <tbody>
-                <tr ng-repeat="order in orders">
-
+                <th>Engineer</th>
+                <th>Start date</th>
+                <th>End date</th>
+                <th>Comment</th>
+                </thead>
+                <tbody>
+                <tr ng-repeat="order in orders" ng-click="show(order.id)">
+                    <td>{{order.id}}</td>
+                    <td>{{order.user.username}}</td>
+                    <td>{{order.company.name}}</td>
+                    <td>{{order.place.name}}</td>
+                    <td>{{order.description}}</td>
+                    <td>{{order.address}}</td>
+                    <td>{{order.status}}</td>
+                    <td>{{order.engineer.username}}</td>
+                    <td>{{order.startDate}}</td>
+                    <td>{{order.endDate}}</td>
+                    <td>{{order.comment}}</td>
                 </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

@@ -2,16 +2,12 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Repository\RoleRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use AppBundle\Entity\RepairOrder;
 
 /**
  * User
@@ -425,9 +421,9 @@ class User implements UserInterface, AdvancedUserInterface, \Serializable
     /**
      * Remove assignedRepairOrders
      *
-     * @param \AppBundle\Entity\RepairOrder $assignedRepairOrders
+     * @param RepairOrder[] $assignedRepairOrders
      */
-    public function removeAssignedRepairOrder(\AppBundle\Entity\RepairOrder $assignedRepairOrders)
+    public function removeAssignedRepairOrder(RepairOrder $assignedRepairOrders)
     {
         $this->assignedRepairOrders->removeElement($assignedRepairOrders);
     }

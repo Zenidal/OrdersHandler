@@ -22,6 +22,10 @@ ordersHandlerApp.config(['$routeProvider', '$provide', '$resourceProvider', func
             templateUrl: 'html/views/orders.html',
             controller: 'OrdersCtrl'
         })
+        .when('/orders/:id', {
+            templateUrl: 'html/views/order.html',
+            controller: 'OrderReviewCtrl'
+        })
         .when('/register', {
             templateUrl: 'html/views/registration.html',
             controller: 'RegistrationCtrl'
@@ -29,6 +33,10 @@ ordersHandlerApp.config(['$routeProvider', '$provide', '$resourceProvider', func
         .when('/registrationResult/:id', {
             templateUrl: 'html/views/registrationResult.html',
             controller: 'RegistrationResultCtrl'
+        })
+        .when('/login', {
+            templateUrl: 'html/views/authorization.html',
+            controller: 'AuthorizationCtrl'
         })
         .otherwise(
         {

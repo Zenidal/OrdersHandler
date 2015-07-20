@@ -22,6 +22,10 @@ login_check:
     pattern:   /login_check
     defaults:  { _controller: AppBundle:Security:loginCheck }
 
+authorize:
+    pattern: /authorize
+    defaults:  { _controller: AppBundle:Authorization:index }
+
 companies:
     pattern: /companies
     defaults:  { _controller: AppBundle:Company:index }
@@ -30,6 +34,9 @@ users:
     pattern: /users
     defaults:  { _controller: AppBundle:User:index }
 
+orders:
+    pattern: /orders
+    defaults:  { _controller: AppBundle:Horder:index }
 
 repair_orders:
     pattern:     /repair_orders

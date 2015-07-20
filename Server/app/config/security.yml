@@ -16,7 +16,7 @@ security:
     firewalls:
 
         public:
-            pattern:  ^/(home|register|registerSuccess|companies|users|email_confirmation)$
+            pattern:  ^/(home|register|registerSuccess|companies|users|orders|order|email_confirmation|authorize)$
             security: false
             anonymous: ~
 
@@ -51,5 +51,6 @@ security:
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/authorize, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }
         - { path: ^/manager, roles: ROLE_MANAGER }

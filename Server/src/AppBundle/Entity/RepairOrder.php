@@ -10,6 +10,7 @@ use AppBundle\Form\Type\RepairOrderType;
  * RepairOrder
  *
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RepairOrderRepository")
  * @ORM\Table(name="repair_order")
  */
 class RepairOrder
