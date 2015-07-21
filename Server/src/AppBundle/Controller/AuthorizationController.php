@@ -8,25 +8,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class AuthorizationController extends Controller
 {
-
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $authenticationUtils = $this->get('security.authentication_utils');
-
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        $response = new Response();
-        return $response->setContent(json_encode([
-            'errorMessage' => 'Authorization was not successful',
-            'lastUsername' => $lastUsername,
-            'error' => $error
-        ]), 200);
+        $security = $this->get('security.context');
+        $user = $this->getUser();
+        $roles = $user->getRoles();
+        $token = new UsernamePasswordToken($user, null, $this->providerKey, $roles);
+        $security->setToken($token);
     }
 }

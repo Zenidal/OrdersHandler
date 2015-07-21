@@ -4,6 +4,13 @@ parameters:
 #    parameter_name: value
 
 services:
+    api_key_user_provider:
+        class: AppBundle\Security\ApiKeyUserProvider
+
+    apikey_authenticator:
+        class:  AppBundle\Security\ApiKeyAuthenticator
+        public: false
+
     security.access.repairorder_voter:
         class:      AppBundle\Security\Authorization\Voter\RepairOrderVoter
         public:     false

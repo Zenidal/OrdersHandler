@@ -12,9 +12,10 @@ security:
         our_db_provider:
             entity:
                 class: AppBundle:User
+        api_key_user_provider:
+            id: api_key_user_provider
 
     firewalls:
-
         public:
             pattern:  ^/(home|register|registerSuccess|companies|users|orders|order|email_confirmation|authorize)$
             security: false
@@ -23,9 +24,13 @@ security:
         login_firewall:
             pattern:   ^/login$
             anonymous: ~
+
         secured_area:
-            pattern:    ^/
-            form_login: ~
+            pattern: ^/admin
+            stateless: true
+            simple_preauth:
+                authenticator: apikey_authenticator
+                provider: api_key_user_provider
             logout:
                 path:   /logout
                 target: /home

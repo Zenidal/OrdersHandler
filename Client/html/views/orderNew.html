@@ -1,7 +1,7 @@
-<div class="orderAlteration">
-    <h1>Order alteration</h1>
+<div class="orderCreation">
+    <h1>Order creation</h1>
     <hr/>
-    <div class="order-alteration-form">
+    <div class="order-creation-form">
         <div class="text-danger" ng-show="hasError">
             {{error}}
             <hr>
@@ -10,8 +10,8 @@
             {{message}}
             <hr>
         </div>
-        <form name="orderAlterationForm" ng-submit="edit()">
-            <button class="btn btn-default" type="submit">Update</button>
+        <form name="orderCreationForm" ng-submit="create()">
+            <button class="btn btn-default" type="submit">Create</button>
         </form>
     </div>
 </div>

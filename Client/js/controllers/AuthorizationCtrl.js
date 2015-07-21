@@ -13,6 +13,7 @@ ordersHandlerControllers.controller('AuthorizationCtrl', ['$scope', '$http', '$r
             };
             $http(req)
                 .success(function(data){
+                    console.log(data);
                     if(data.errorMessage !== null){
                         $scope.hasError = true;
                         $scope.error = data.errorMessage;
@@ -25,6 +26,7 @@ ordersHandlerControllers.controller('AuthorizationCtrl', ['$scope', '$http', '$r
                     }
                 })
                 .error(function(error){
+                    console.log(error);
                     $scope.hasError = true;
                     $scope.error = error;
                 });

@@ -34,9 +34,23 @@ users:
     pattern: /users
     defaults:  { _controller: AppBundle:User:index }
 
-orders:
+orders_get:
     pattern: /orders
-    defaults:  { _controller: AppBundle:Horder:index }
+    defaults:  { _controller: AppBundle:Horder:get }
+    requirements:
+        _method:  GET
+
+orders_options:
+    pattern: /orders
+    defaults:  { _controller: AppBundle:Horder:options }
+    requirements:
+        _method:  OPTIONS
+
+orders_delete:
+    pattern: /orders
+    defaults:  { _controller: AppBundle:Horder:delete }
+    requirements:
+        _method:  DELETE
 
 repair_orders:
     pattern:     /repair_orders
