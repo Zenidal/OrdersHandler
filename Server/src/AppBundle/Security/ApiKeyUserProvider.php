@@ -1,18 +1,33 @@
 <?php
 namespace AppBundle\Security;
 
+use AppBundle\Entity\Token;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
 class ApiKeyUserProvider implements UserProviderInterface
 {
+    /** @var EntityManager $em */
+    private $em;
+
+    public function __construct($entity_manager)
+    {
+        $this->em = $entity_manager;
+    }
+
     public function getUsernameForApiKey($apiKey)
     {
-        $username = $apiKey->getUsername();
+        /** @var Token $token */
+        $token = $this->em->getRepository('AppBundle\Entity\Token')->findOneBy([
+            'value' => $apiKey
+        ]);
+        if ($token) {
+            return $token->getUser()->getUsername();
+        }
 
-        return $username;
+        return null;
     }
 
     public function loadUserByUsername($username)
@@ -26,7 +41,7 @@ class ApiKeyUserProvider implements UserProviderInterface
 
     public function refreshUser(UserInterface $user)
     {
-        throw new UnsupportedUserException();
+        return $this->loadUserByUsername($user->getUsername());
     }
 
     public function supportsClass($class)

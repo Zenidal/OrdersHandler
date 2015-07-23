@@ -98,6 +98,12 @@ class User implements UserInterface, AdvancedUserInterface, \Serializable
     private $companies;
 
     /**
+     * @ORM\OneToOne(targetEntity="Token", inversedBy="user")
+     * @ORM\JoinColumn(name="token_id", referencedColumnName="id", onDelete="cascade")
+     **/
+    private $token;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -519,5 +525,28 @@ class User implements UserInterface, AdvancedUserInterface, \Serializable
     public function isEnabled()
     {
         return $this->isActive;
+    }
+
+    /**
+     * Set token
+     *
+     * @param \AppBundle\Entity\Token $token
+     * @return User
+     */
+    public function setToken(\AppBundle\Entity\Token $token = null)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return \AppBundle\Entity\Token 
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 }

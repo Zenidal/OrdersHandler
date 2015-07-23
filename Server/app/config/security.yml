@@ -17,7 +17,7 @@ security:
 
     firewalls:
         public:
-            pattern:  ^/(home|register|registerSuccess|companies|users|orders|order|email_confirmation|authorize)$
+            pattern:  ^/(home|register|registerSuccess|companies|users|order|email_confirmation|authorize)$
             security: false
             anonymous: ~
 
@@ -26,11 +26,11 @@ security:
             anonymous: ~
 
         secured_area:
-            pattern: ^/admin
+            pattern: ^/
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator
-                provider: api_key_user_provider
+            provider: api_key_user_provider
             logout:
                 path:   /logout
                 target: /home
@@ -57,5 +57,6 @@ security:
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/authorize, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [OPTIONS] }
         - { path: ^/, roles: ROLE_USER }
         - { path: ^/manager, roles: ROLE_MANAGER }

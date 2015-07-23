@@ -16,14 +16,14 @@
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse-9">
                     <ul class="nav navbar-nav">
-                        <li><a href="#/register">Registration</a></li>
-                        <li><a href="#/login">Authorization</a></li>
+                        <li ng-hide="hasAuthorizedUser"><a href="#/register">Registration</a></li>
+                        <li ng-hide="hasAuthorizedUser"><a href="#/login">Authorization</a></li>
                         <li><a href="#/orders">Orders</a></li>
                         <li><a href="#/manager">Manager page</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#/logout">Log out</a></li>
-                        <li><a href="#/profile">Profile</a></li>
+                        <li ng-show="hasAuthorizedUser"><a href="#/logout">Log out</a></li>
+                        <li ng-show="hasAuthorizedUser"><a href="#/profile">Profile</a></li>
                     </ul>
                 </div>
             </nav>
