@@ -17,6 +17,7 @@ services:
         public:     false
         tags:
            - { name: security.voter }
+        arguments: ['@doctrine.orm.entity_manager']
 
     form.order.type:
         class: AppBundle\Form\Type\RepairOrderType

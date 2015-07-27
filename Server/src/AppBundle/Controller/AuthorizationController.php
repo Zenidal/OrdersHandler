@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 require_once('headers/headers.php');
 
+use AppBundle\Entity\Company;
 use AppBundle\Entity\Token;
 use AppBundle\Entity\User;
 use AppBundle\Repository\UserRepository;
@@ -21,11 +22,11 @@ class AuthorizationController extends Controller
         try {
             $username = null;
             $password = null;
-            if($request->isMethod('GET')){
+            if ($request->isMethod('GET')) {
                 $username = $request->get('username');
                 $password = $request->get('password');
             }
-            if($request->isMethod('POST')){
+            if ($request->isMethod('POST')) {
                 $data = json_decode($request->getContent(), true);
                 $username = $data['username'];
                 $password = $data['password'];
@@ -55,22 +56,37 @@ class AuthorizationController extends Controller
             }
 
             $token = $user->getToken();
-            if(!$token){
+            if (!$token) {
                 $token = new Token();
                 $token->setValue($this->generateApiKey());
                 $token->setUser($user);
                 $user->setToken($token);
                 $em->persist($token);
                 $em->flush();
-            }
-            else {
+            } else {
                 $token->setValue($this->generateApiKey());
                 $token->setUser($user);
                 $user->setToken($token);
                 $em->flush();
             }
             $response = new Response();
-            return $response->setContent(json_encode(['apiKey' => $token->getValue()]));
+
+            $companies = [];
+            /** @var Company $company */
+            foreach($user->getCompanies() as $company){
+                $companies[] = [
+                    'id' => $company->getId(),
+                    'name' => $company->getName()
+                ];
+            }
+
+            return $response->setContent(json_encode([
+                'apiKey' => $token->getValue(),
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'roleName' => $user->getRole()->getName(),
+                'companies' => $companies
+            ]));
         } catch (\Exception $ex) {
             $response = new Response();
             return $response->setContent(json_encode([

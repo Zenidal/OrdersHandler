@@ -1,5 +1,5 @@
-ordersHandlerControllers.controller('AuthorizationCtrl', ['$scope', '$http', '$rootScope',
-    function ($scope, $http, $rootScope) {
+ordersHandlerControllers.controller('AuthorizationCtrl', ['$scope', '$http', '$rootScope', '$location',
+    function ($scope, $http, $rootScope, $location) {
         $scope.login = login;
 
         function login() {
@@ -20,7 +20,15 @@ ordersHandlerControllers.controller('AuthorizationCtrl', ['$scope', '$http', '$r
                         $scope.lastUsername = data.lastUsername;
                     } else {
                         $rootScope.hasAuthorizedUser = true;
-                        $rootScope.apiKey = data.apiKey;
+                        $rootScope.currentUser = {
+                            apiKey: data.apiKey,
+                            id: data.id,
+                            username: data.username,
+                            roleName: data.roleName,
+                            companies: data.companies,
+                            isManager: data.roleName === 'ROLE_MANAGER'
+                        };
+                        $location.path('/orders');
                     }
                     if (data.message !== null) {
                         $scope.hasMessage = true;

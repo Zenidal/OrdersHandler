@@ -3,11 +3,17 @@ namespace AppBundle\Security\Authorization\Voter;
 
 use AppBundle\Form\Type\RepairOrderType;
 use AppBundle\Form\Type\RoleType;
+use AppBundle\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class RepairOrderVoter implements VoterInterface
 {
+    /** @var EntityManager $em */
+    private $em;
+
     const VIEW = 'view';
     const EDIT = 'edit';
     const CREATE = 'create';
@@ -17,6 +23,11 @@ class RepairOrderVoter implements VoterInterface
     const FINISH = 'finish';
     const CLOSE = 'close';
     const REOPEN = 'reopen';
+
+    public function __construct($entity_manager)
+    {
+        $this->em = $entity_manager;
+    }
 
     public function supportsAttribute($attribute)
     {
@@ -42,6 +53,7 @@ class RepairOrderVoter implements VoterInterface
 
     /**
      * @var \AppBundle\Entity\RepairOrder $repairOrder
+     * @return VoterInterface
      */
     public function vote(TokenInterface $token, $repairOrder, array $attributes)
     {
@@ -75,17 +87,21 @@ class RepairOrderVoter implements VoterInterface
             return VoterInterface::ACCESS_DENIED;
         }
 
+        /** @var UserRepository $repository */
+        $repository = $this->em->getRepository('AppBundle\Entity\User');
+        $userEntity = $repository->loadUserByUsername($user->getUsername());
+
         switch ($attribute) {
             case self::VIEW:
                 // the data object could have for example a method isPrivate()
                 // which checks the boolean attribute $private
-                if ($user->getRole()->getName() === RoleType::ROLE_MANAGER) {
+                if ($userEntity->getRole()->getName() === RoleType::ROLE_MANAGER) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
-                if ($repairOrder->getUser() === $user) {
+                if ($repairOrder->getUser() === $userEntity) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
-                if (!is_null($repairOrder->getEngineer()) && $repairOrder->getEngineer()->getId() === $user->getId() && $user->getRole()->getName() === RoleType::ROLE_ENGINEER) {
+                if (!is_null($repairOrder->getEngineer()) && $repairOrder->getEngineer()->getId() === $userEntity->getId() && $userEntity->getRole()->getName() === RoleType::ROLE_ENGINEER) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
@@ -93,10 +109,10 @@ class RepairOrderVoter implements VoterInterface
             case self::EDIT:
                 // we assume that our data object has a method getOwner() to
                 // get the current owner user entity for this data object
-                if ($user->getRole()->getName() === RoleType::ROLE_MANAGER ||
+                if ($userEntity->getRole()->getName() === RoleType::ROLE_MANAGER ||
                     (
-                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN ||
-                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_REOPENED
+                        $repairOrder->getUser() === $userEntity && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN ||
+                        $repairOrder->getUser() === $userEntity && $repairOrder->getStatus() === RepairOrderType::STATUS_REOPENED
                     )
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
@@ -104,16 +120,16 @@ class RepairOrderVoter implements VoterInterface
                 break;
 
             case self::CREATE:
-                if (in_array($user->getRole()->getName(), [RoleType::ROLE_CUSTOMER])) {
+                if (in_array($userEntity->getRole()->getName(), [RoleType::ROLE_CUSTOMER])) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
 
             case self::DELETE:
-                if ($user->getRole()->getName() === RoleType::ROLE_MANAGER ||
+                if ($user->$userEntity()->getName() === RoleType::ROLE_MANAGER ||
                     (
-                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN ||
-                        $repairOrder->getUser() === $user && $repairOrder->getStatus() === RepairOrderType::STATUS_REOPENED
+                        $repairOrder->getUser() === $userEntity && $repairOrder->getStatus() === RepairOrderType::STATUS_OPEN ||
+                        $repairOrder->getUser() === $userEntity && $repairOrder->getStatus() === RepairOrderType::STATUS_REOPENED
                     )
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
@@ -122,7 +138,7 @@ class RepairOrderVoter implements VoterInterface
 
             case self::ASSIGN:
                 if (!in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_IN_PROCESS, RepairOrderType::STATUS_CLOSED]) &&
-                    $user->getRole()->getName() === RoleType::ROLE_MANAGER
+                    $user->$userEntity()->getName() === RoleType::ROLE_MANAGER
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
@@ -133,8 +149,8 @@ class RepairOrderVoter implements VoterInterface
                     !is_null($repairOrder->getEngineer())
                 ) {
                     if (
-                        $repairOrder->getEngineer()->getId() === $user->getId() &&
-                        $user->getRole()->getName() === RoleType::ROLE_ENGINEER
+                        $repairOrder->getEngineer()->getId() === $userEntity->getId() &&
+                        $userEntity->getRole()->getName() === RoleType::ROLE_ENGINEER
                     ) {
                         return VoterInterface::ACCESS_GRANTED;
                     }
@@ -143,8 +159,8 @@ class RepairOrderVoter implements VoterInterface
 
             case self::FINISH:
                 if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_IN_PROCESS]) &&
-                    $repairOrder->getEngineer()->getId() === $user->getId() &&
-                    $user->getRole()->getName() === RoleType::ROLE_ENGINEER
+                    $repairOrder->getEngineer()->getId() === $userEntity->getId() &&
+                    $userEntity->getRole()->getName() === RoleType::ROLE_ENGINEER
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
@@ -154,10 +170,10 @@ class RepairOrderVoter implements VoterInterface
                 if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_RESOLVED]) &&
                     (
                         (
-                            $repairOrder->getUser()->getId() === $user->getId() &&
-                            $user->getRole()->getName() === RoleType::ROLE_CUSTOMER
+                            $repairOrder->getUser()->getId() === $userEntity->getId() &&
+                            $userEntity->getRole()->getName() === RoleType::ROLE_CUSTOMER
                         ) ||
-                        $user->getRole()->getName() === RoleType::ROLE_MANAGER
+                        $userEntity->getRole()->getName() === RoleType::ROLE_MANAGER
                     )
 
                 ) {
@@ -169,10 +185,10 @@ class RepairOrderVoter implements VoterInterface
                 if (in_array($repairOrder->getStatus(), [RepairOrderType::STATUS_RESOLVED]) &&
                     (
                         (
-                            $repairOrder->getUser()->getId() === $user->getId() &&
-                            $user->getRole()->getName() === RoleType::ROLE_CUSTOMER
+                            $repairOrder->getUser()->getId() === $userEntity->getId() &&
+                            $userEntity->getRole()->getName() === RoleType::ROLE_CUSTOMER
                         ) ||
-                        $user->getRole()->getName() === RoleType::ROLE_MANAGER
+                        $userEntity->getRole()->getName() === RoleType::ROLE_MANAGER
                     )
 
                 ) {

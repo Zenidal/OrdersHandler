@@ -17,38 +17,17 @@ security:
 
     firewalls:
         public:
-            pattern:  ^/(home|register|registerSuccess|companies|users|order|email_confirmation|authorize)$
+            pattern:  ^/(home|register|registerSuccess|companies|companies/[0-9]+/places|users|email_confirmation|authorize)$
             security: false
-            anonymous: ~
-
-        login_firewall:
-            pattern:   ^/login$
             anonymous: ~
 
         secured_area:
             pattern: ^/
+            methods: [GET, POST, PUT, DELETE, TRACE, HEAD, CONNECT]
             stateless: true
             simple_preauth:
                 authenticator: apikey_authenticator
             provider: api_key_user_provider
-            logout:
-                path:   /logout
-                target: /home
-
-        default:
-            pattern:    ^/
-            anonymous: ~
-            http_basic: ~
-            provider: our_db_provider
-            form_login:
-                login_path: /login
-                check_path: /login_check
-                remember_me: true
-            remember_me:
-                key:      "%secret%"
-                lifetime: 604800 # 1 week in seconds
-                path:     /
-                domain:   ~
 
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
@@ -57,6 +36,5 @@ security:
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/authorize, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [OPTIONS] }
         - { path: ^/, roles: ROLE_USER }
         - { path: ^/manager, roles: ROLE_MANAGER }

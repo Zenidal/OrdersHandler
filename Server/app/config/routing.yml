@@ -34,6 +34,10 @@ users:
     pattern: /users
     defaults:  { _controller: AppBundle:User:index }
 
+places_by_company:
+    pattern: /companies/{id}/places
+    defaults:  { _controller: AppBundle:Company:placesByCompany }
+
 orders_get:
     pattern: /orders
     defaults:  { _controller: AppBundle:Horder:get }

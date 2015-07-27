@@ -13,97 +13,108 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use AppBundle\Repository\RepairOrderRepository;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class HorderController extends Controller
 {
     public function getAction(Request $request)
     {
-        if ($request->isMethod('GET')) {
-            $encoders = array(new XmlEncoder(), new JsonEncoder());
-            $normalizers = array(new GetSetMethodNormalizer());
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
 
-            $serializer = new Serializer($normalizers, $encoders);
+        $serializer = new Serializer($normalizers, $encoders);
 
-            /** @var RepairOrderRepository $repository */
-            $repository = $this->getDoctrine()->getManager()->getRepository('AppBundle:RepairOrder');
+        /** @var RepairOrderRepository $repository */
+        $repository = $this->getDoctrine()->getManager()->getRepository('AppBundle:RepairOrder');
 
-            $id = $request->get('id');
+        $id = $request->get('id');
 
-            if (is_null($id)) {
-                /** @var RepairOrder[] $orders */
-                $orders = $repository->findAll();
-                $result = [];
-                foreach ($orders as $order) {
-                    $result[] = [
-                        'id' => $order->getId(),
-                        'description' => $order->getDescription(),
-                        'address' => $order->getAddress(),
-                        'status' => $order->getTextStatus(),
-                        'startDate' => is_null($order->getStartDate()) ? null : date("m.d.y", $order->getStartDate()->getTimestamp()),
-                        'endDate' => is_null($order->getEndDate()) ? null : date("m.d.y", $order->getEndDate()->getTimestamp()),
-                        'comment' => is_null($order->getComment()) ? null : $order->getComment(),
-                        'user' => is_null($order->getUser()) ? null : [
-                            'id' => $order->getUser()->getId(),
-                            'username' => $order->getUser()->getUsername(),
-                        ],
-                        'company' => is_null($order->getCompany()) ? null : [
-                            'id' => $order->getCompany()->getId(),
-                            'name' => $order->getCompany()->getName(),
-                        ],
-                        'place' => is_null($order->getPlace()) ? null : [
-                            'id' => $order->getPlace()->getId(),
-                            'name' => $order->getPlace()->getName(),
-                        ],
-                        'engineer' => (is_null($order->getEngineer()) ? null : [
-                            'id' => $order->getEngineer()->getId(),
-                            'username' => $order->getEngineer()->getUsername(),
-                        ]),
-                    ];
-                }
-            } else {
-                /** @var RepairOrder $order */
-                $order = $repository->find($id);
-                if(!$order){
-                    $response = new Response();
-                    return $response->setContent(json_encode(['errorMessage' => 'Order was not found.']), 200);
-                }
-                else{
-                    $result = [
-                        'id' => $order->getId(),
-                        'description' => $order->getDescription(),
-                        'address' => $order->getAddress(),
-                        'status' => $order->getTextStatus(),
-                        'startDate' => is_null($order->getStartDate()) ? null : date("m.d.y", $order->getStartDate()->getTimestamp()),
-                        'endDate' => is_null($order->getEndDate()) ? null : date("m.d.y", $order->getEndDate()->getTimestamp()),
-                        'comment' => is_null($order->getComment()) ? null : $order->getComment(),
-                        'user' => is_null($order->getUser()) ? null : [
-                            'id' => $order->getUser()->getId(),
-                            'username' => $order->getUser()->getUsername(),
-                        ],
-                        'company' => is_null($order->getCompany()) ? null : [
-                            'id' => $order->getCompany()->getId(),
-                            'name' => $order->getCompany()->getName(),
-                        ],
-                        'place' => is_null($order->getPlace()) ? null : [
-                            'id' => $order->getPlace()->getId(),
-                            'name' => $order->getPlace()->getName(),
-                        ],
-                        'engineer' => (is_null($order->getEngineer()) ? null : [
-                            'id' => $order->getEngineer()->getId(),
-                            'username' => $order->getEngineer()->getUsername(),
-                        ]),
-                    ];
+        if (is_null($id)) {
+            /** @var RepairOrder[] $orders */
+            $orders = $repository->findAll();
+            foreach ($orders as $order) {
+                try {
+                    $this->denyAccessUnlessGranted('view', $order, 'Access denied!');
+                } catch (AccessDeniedException $ex) {
+                    $key = array_search($order, $orders);
+                    unset($orders[$key]);
+                    $orders = array_values($orders);
                 }
             }
-            return new Response($serializer->serialize($result, 'json'));
+            $result = [];
+            foreach ($orders as $order) {
+                $result[] = [
+                    'id' => $order->getId(),
+                    'description' => $order->getDescription(),
+                    'address' => $order->getAddress(),
+                    'status' => $order->getTextStatus(),
+                    'startDate' => is_null($order->getStartDate()) ? null : date("m.d.y", $order->getStartDate()->getTimestamp()),
+                    'endDate' => is_null($order->getEndDate()) ? null : date("m.d.y", $order->getEndDate()->getTimestamp()),
+                    'comment' => is_null($order->getComment()) ? null : $order->getComment(),
+                    'user' => is_null($order->getUser()) ? null : [
+                        'id' => $order->getUser()->getId(),
+                        'username' => $order->getUser()->getUsername(),
+                    ],
+                    'company' => is_null($order->getCompany()) ? null : [
+                        'id' => $order->getCompany()->getId(),
+                        'name' => $order->getCompany()->getName(),
+                    ],
+                    'place' => is_null($order->getPlace()) ? null : [
+                        'id' => $order->getPlace()->getId(),
+                        'name' => $order->getPlace()->getName(),
+                    ],
+                    'engineer' => (is_null($order->getEngineer()) ? null : [
+                        'id' => $order->getEngineer()->getId(),
+                        'username' => $order->getEngineer()->getUsername(),
+                    ]),
+                ];
+            }
+        } else {
+            /** @var RepairOrder $order */
+            $order = $repository->find($id);
+            try {
+                $this->denyAccessUnlessGranted('view', $order, 'Access denied!');
+            } catch (AccessDeniedException $ex) {
+                $response = new Response();
+                return $response->setContent(json_encode(['errorMessage' => 'Access denied.']));
+            }
+            if (!$order) {
+                $response = new Response();
+                return $response->setContent(json_encode(['errorMessage' => 'Order was not found.']));
+            } else {
+                $result = [
+                    'id' => $order->getId(),
+                    'description' => $order->getDescription(),
+                    'address' => $order->getAddress(),
+                    'status' => $order->getTextStatus(),
+                    'startDate' => is_null($order->getStartDate()) ? null : date("m.d.y", $order->getStartDate()->getTimestamp()),
+                    'endDate' => is_null($order->getEndDate()) ? null : date("m.d.y", $order->getEndDate()->getTimestamp()),
+                    'comment' => is_null($order->getComment()) ? null : $order->getComment(),
+                    'user' => is_null($order->getUser()) ? null : [
+                        'id' => $order->getUser()->getId(),
+                        'username' => $order->getUser()->getUsername(),
+                    ],
+                    'company' => is_null($order->getCompany()) ? null : [
+                        'id' => $order->getCompany()->getId(),
+                        'name' => $order->getCompany()->getName(),
+                    ],
+                    'place' => is_null($order->getPlace()) ? null : [
+                        'id' => $order->getPlace()->getId(),
+                        'name' => $order->getPlace()->getName(),
+                    ],
+                    'engineer' => (is_null($order->getEngineer()) ? null : [
+                        'id' => $order->getEngineer()->getId(),
+                        'username' => $order->getEngineer()->getUsername(),
+                    ]),
+                ];
+            }
         }
+        return new Response($serializer->serialize($result, 'json'));
     }
 
-    public function optionsAction(Request $request)
+    public function optionsAction()
     {
-        if ($request->isMethod('OPTIONS')) {
-            return new Response('', 200);
-        }
+        return new Response('', 200);
     }
 
     public function deleteAction(Request $request)
@@ -111,16 +122,15 @@ class HorderController extends Controller
         /** @var RepairOrderRepository $repository */
         $repository = $this->getDoctrine()->getManager()->getRepository('AppBundle:RepairOrder');
         $order = $repository->find($request->get('id'));
-        if(!$order){
+        if (!$order) {
             $response = new Response();
-            return $response->setContent(json_encode(['errorMessage' => 'Order was not found.']), 200);
+            return $response->setContent(json_encode(['errorMessage' => 'Order was not found.']));
         } else {
             $em = $this->getDoctrine()->getManager();
             $em->remove($order);
             $em->flush();
             $response = new Response();
-            return $response->setContent(json_encode(['message' => 'Order was successfully deleted..']), 202);
+            return $response->setContent(json_encode(['message' => 'Order was successfully deleted..']));
         }
-        return new Response('', 200);
     }
 }
