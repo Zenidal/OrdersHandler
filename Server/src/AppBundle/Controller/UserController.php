@@ -6,6 +6,7 @@ require_once('headers/headers.php');
 
 use AppBundle\Entity\User;
 use AppBundle\Form\Type\RoleType;
+use AppBundle\Repository\RoleRepository;
 use Swift_Mailer;
 use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -13,6 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Validator;
 
 class UserController extends Controller
 {
@@ -20,8 +24,11 @@ class UserController extends Controller
     {
         if ($request->isMethod('POST')) {
             $data = json_decode($request->getContent(), true);
+            /** @var Validator $validator */
             $validator = $this->get('validator');
 
+            /** @var RoleRepository $roleRepository */
+            $roleRepository = $this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role');
             $user = new User();
             $user->setUsername($data['username']);
             $user->setPassword($data['password']);
@@ -29,13 +36,14 @@ class UserController extends Controller
             $user->setSurname($data['surname']);
             $user->setEmail($data['email']);
             $user->setConfirmationLink($data['confirmationLink']);
-            $user->setRole($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Role')->findRoleByName(RoleType::ROLE_CUSTOMER));
+            $user->setRole($roleRepository->findRoleByName(RoleType::ROLE_CUSTOMER));
             $user->setIsActive(false);
             foreach($data['companies'] as $company){
                 $id = $company['id'];
                 $user->addCompany($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Company')->find($id));
             }
 
+            /** @var ConstraintViolationList $errors */
             $errors = $validator->validate($user);
 
             if (count($errors) === 0) {
@@ -63,7 +71,7 @@ class UserController extends Controller
                 $em->flush();
 
                 $response = new Response();
-                return $response->setContent(json_encode(['message' => 'User successfully registered. Check your mail to confirm registration.']), 201);
+                return $response->setContent(json_encode(['message' => 'User successfully registered. Check your mail to confirm registration.']));
             }
 
             $response = new Response();
@@ -71,7 +79,7 @@ class UserController extends Controller
             foreach ($errors as $error) {
                 $errorsString .= $error->getMessage().' ';
             }
-            return $response->setContent(json_encode(['errorMessage' => $errorsString]), 200);
+            return $response->setContent(json_encode(['errorMessage' => $errorsString]));
         }
         if ($request->isMethod('OPTIONS')) {
             return new Response('', 200);
@@ -92,7 +100,7 @@ class UserController extends Controller
                 try {
                     throw $this->createNotFoundException('This link is invalid.');
                 } catch (NotFoundHttpException $ex) {
-                    return $response->setContent(json_encode(['errorMessage' => $ex->getMessage()]), 200);
+                    return $response->setContent(json_encode(['errorMessage' => $ex->getMessage()]));
                 }
 
             }
@@ -101,7 +109,7 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->flush();
 
-            return $response->setContent(json_encode(['message' => 'Account was successfully confirmed .']), 200);
+            return $response->setContent(json_encode(['message' => 'Account was successfully confirmed .']));
         }
         if($request->isMethod('OPTIONS')){
             return new Response('', 200);
@@ -111,13 +119,13 @@ class UserController extends Controller
             $repository = $this->getDoctrine()->getRepository('AppBundle:User');
             $link = $request->get('confirmationLink');
             $user = $repository->findOneBy(
-                array('confirmationLink' => $request->get('confirmationLink'))
+                array('confirmationLink' => $link)
             );
             if (!$user || $user->getIsActive()) {
                 try {
                     throw $this->createNotFoundException('This link is invalid.');
                 } catch (NotFoundHttpException $ex) {
-                    return $response->setContent(json_encode(['errorMessage' => $ex->getMessage()]), 200);
+                    return $response->setContent(json_encode(['errorMessage' => $ex->getMessage()]));
                 }
 
             }
@@ -126,7 +134,7 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->flush();
 
-            return $response->setContent(json_encode(['message' => 'Account was successfully confirmed .']), 200);
+            return $response->setContent(json_encode(['message' => 'Account was successfully confirmed .']));
         }
         return new Response('', 404);
     }

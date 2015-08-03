@@ -25,7 +25,7 @@ ordersHandlerControllers.controller('OrderReviewCtrl', ['$scope', '$routeParams'
                 if ($scope.order.id === undefined) {
                     $location.path('/orders');
                 }
-            }, function (error) {
+            }, function () {
                 if ($scope.order.id === undefined) {
                     $location.path('/orders');
                 }
@@ -36,9 +36,9 @@ ordersHandlerControllers.controller('OrderReviewCtrl', ['$scope', '$routeParams'
         }
 
         function onDelete(id) {
-            Orders.delete({id: id}, function (success) {
+            Orders.delete({id: id}, function () {
                 $location.path('/orders');
-            }, function (error) {
+            }, function () {
                 $location.path('/orders');
             });
         }
@@ -55,8 +55,8 @@ ordersHandlerControllers.controller('OrderAlterationCtrl', ['$scope', '$routePar
 
 ordersHandlerControllers.controller('OrderCreationCtrl', ['$scope', '$rootScope', 'Orders', '$http',
     function ($scope, $rootScope, Orders, $http) {
-        $scope.companyChange = companyChange;
         $scope.create = create;
+        $scope.companies = $rootScope.currentUser.companies[0];
 
         var req = {
             method: 'GET',
@@ -68,7 +68,8 @@ ordersHandlerControllers.controller('OrderCreationCtrl', ['$scope', '$rootScope'
                     $scope.hasError = true;
                     $scope.error = data.errorMessage;
                 } else {
-                    $scope.places = data;
+                    $scope.companyPlaces = data;
+                    $scope.places = $scope.companyPlaces[0];
                 }
                 if (data.message !== null) {
                     $scope.hasMessage = true;
@@ -80,10 +81,10 @@ ordersHandlerControllers.controller('OrderCreationCtrl', ['$scope', '$rootScope'
                 $scope.error = error;
             });
 
-        function companyChange(id) {
+        $scope.changeCompany = function(companies) {
             var req = {
                 method: 'GET',
-                url: $rootScope.serverPath + '/companies/' + id + '/places'
+                url: $rootScope.serverPath + '/companies/' + companies.id + '/places'
             };
             $http(req)
                 .success(function (data) {
@@ -91,7 +92,8 @@ ordersHandlerControllers.controller('OrderCreationCtrl', ['$scope', '$rootScope'
                         $scope.hasError = true;
                         $scope.error = data.errorMessage;
                     } else {
-                        $scope.places = data;
+                        $scope.companyPlaces = data;
+                        $scope.places = $scope.companyPlaces[0];
                     }
                     if (data.message !== null) {
                         $scope.hasMessage = true;
@@ -102,23 +104,23 @@ ordersHandlerControllers.controller('OrderCreationCtrl', ['$scope', '$rootScope'
                     $scope.hasError = true;
                     $scope.error = error;
                 });
-        }
+        };
 
         function create() {
             var Order = new Orders;
             Order.userId = $rootScope.currentUser.id;
             Order.description = $scope.description;
             Order.address = $scope.address;
-            Order.companyId = $companies.id;
-            Order.placeId = $company.places.id;
+            Order.companyId = $scope.companies.id;
+            Order.placeId = $scope.places.id;
             Order.$save(function (success) {
-                if (data.errorMessage !== null) {
+                if (success.errorMessage !== null) {
                     $scope.hasError = true;
-                    $scope.error = data.errorMessage;
+                    $scope.error = success.errorMessage;
                 }
-                if (data.message !== null) {
+                if (success.message !== null) {
                     $scope.hasMessage = true;
-                    $scope.message = data.message;
+                    $scope.message = success.message;
                 }
             }, function (error) {
                 $scope.hasError = true;

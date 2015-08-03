@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Company;
+use AppBundle\Repository\CompanyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,15 +19,15 @@ class PlaceController extends Controller
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new GetSetMethodNormalizer());
 
-        $serializer = new Serializer($normalizers, $encoders);
-
+        /** @var CompanyRepository $repository */
         $repository = $this->getDoctrine()->getManager()->getRepository('AppBundle:Company');
+        /** @var Company $company */
         $company = $repository->findOneByName($request->get('name'));
         $places = $company->getPlaces();
         $result = [];
         foreach($places as $place){
             $result[] = [$place->getId(), $place->getName()];
         }
-        return new Response($serializer->serialize($result, 'json'));
+        return new Response(json_encode($result));
     }
 }

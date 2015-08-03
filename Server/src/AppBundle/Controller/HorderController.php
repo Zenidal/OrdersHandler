@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 require_once('headers/headers.php');
 
+use AppBundle\Form\Type\RepairOrderType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\RepairOrder;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,8 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use AppBundle\Repository\RepairOrderRepository;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Validator;
 
 class HorderController extends Controller
 {
@@ -132,5 +135,43 @@ class HorderController extends Controller
             $response = new Response();
             return $response->setContent(json_encode(['message' => 'Order was successfully deleted..']));
         }
+    }
+
+    public function postAction(Request $request)
+    {
+
+        $data = json_decode($request->getContent(), true);
+
+        /** @var Validator $validator */
+        $validator = $this->get('validator');
+
+        $repairOrder = new RepairOrder();
+        $repairOrder->setDescription($data['description']);
+        $repairOrder->setAddress($data['address']);
+        $repairOrder->setCompany($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Company')->find($data['companyId']));
+        $repairOrder->setPlace($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:Place')->find($data['placeId']));
+        $repairOrder->setUser($this->getDoctrine()->getEntityManager()->getRepository('AppBundle:User')->find($data['userId']));
+        $repairOrder->setStatus(RepairOrderType::STATUS_OPEN);
+
+        /** @var ConstraintViolationList $errors */
+        $errors = $validator->validate($repairOrder);
+
+        if (count($errors) === 0) {
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($repairOrder);
+            $em->flush();
+
+            $response = new Response();
+            return $response->setContent(json_encode(['message' => 'Order successfully created.']));
+        }
+
+        $response = new Response();
+        $errorsString = null;
+        foreach ($errors as $error) {
+            $errorsString .= $error->getMessage() . ' ';
+        }
+        return $response->setContent(json_encode(['errorMessage' => $errorsString]));
+
     }
 }
